@@ -1,0 +1,112 @@
+🧾 Snowbird – Residency Day Tracker for State Tax Compliance
+Primary Purpose:
+Snowbird helps seasonal residents avoid surprise tax bills by tracking their time in each state — especially where the 183-day rule can trigger state tax residency.
+
+Description:
+Snowbird is a smart, location-aware financial tracker designed for snowbirds, remote workers, and dual-state homeowners. Whether you’re dodging winter or state income tax, Snowbird keeps tabs on your residency days, logs relevant expenses, and builds a bulletproof audit trail — all from your phone.
+
+Now with an AI Personal Assistant, Snowbird goes beyond tracking: it helps you plan smarter, file faster, and stay compliant with ease.
+
+Core Features:
+📍 Residency Day Tracker – Auto-log or manually add days spent in each state using location data
+🧮 183-Day Threshold Alerts – Real-time alerts as you approach state residency limits
+💸 State-Based Expense Categorization – Tag purchases by location for audit-proof records
+📝 Secure Residency Log – Journal housing, work, and travel details with timestamps
+🔐 Private & Synced – End-to-end encrypted and synced across your devices
+
+🤖 AI Snowbird Assistant –
+Let your assistant do the thinking. Ask it to:
+
+Generate summary reports for tax season
+
+Find gaps in your travel log
+
+Draft letters or documents in case of an audit
+
+Recommend state-specific compliance tips based on your profile
+
+Alert you to suspicious patterns or risk zones
+
+Ideal For:
+Snowbirds splitting time between states like AZ/NY, FL/CA, or TX/IL
+
+High-income earners with multiple homes
+
+Remote professionals avoiding unwanted residency
+
+Anyone who wants clean, credible records without the spreadsheet mess
+
+Why It Matters:
+States like New York and California aggressively audit anyone who might owe them. Cross that 183-day line — even unintentionally — and you could be hit with a massive tax bill. Snowbird helps you prove where you were, how long you stayed, and why you don’t owe state income tax there.
+
+Let me know if you want this tailored for App Store/Play Store formats, or broken down into investor pitch copy, one-liner summaries, or press release format.
+
+
+
+
+
+
+
+
+You said:
+Could you create a replit prompt?
+
+
+ChatGPT said:
+Absolutely, here’s a Replit prompt tailored to help you build the AI-powered version of the Snowbird app, with a focus on adding the AI Personal Assistant feature:
+
+🧠 Replit Prompt: Add AI Personal Assistant to Snowbird App
+
+Build an AI-powered personal assistant module for the Snowbird – Residency Day Tracker app. The assistant should help users with tax residency compliance tasks using natural language interaction.
+
+Project Requirements:
+Core Functionality:
+
+Integrate OpenAI's GPT API (or similar) for AI-driven conversations
+
+Users can type or speak prompts like:
+
+“How many days do I have left in California this year?”
+
+“Summarize my Arizona expenses for March”
+
+“Draft a non-residency affidavit for New York”
+
+“Check if I crossed the 183-day rule in any state”
+
+Return clear, user-friendly responses with relevant data
+
+Data Access & Security:
+
+Access logged location data, expense entries, and travel journal (from Firestore or app state)
+
+Ensure the assistant only accesses and returns data tied to the authenticated user
+
+Respect privacy: no OpenAI logging of personal data (use anonymization or secure proxying if needed)
+
+UI Integration (Streamlit):
+
+Create an “Ask Snowbird AI” chat window in the sidebar or dedicated tab
+
+Support voice input if feasible using Web Speech API or similar
+
+Show loading spinners and error handling gracefully
+
+Bonus Features:
+
+Add templated outputs (e.g., PDF exports for audit letters)
+
+Proactive suggestions: “Hey, you’re 10 days away from NY’s 183-day threshold”
+
+Summarize yearly data by state for tax filing
+
+Tech Stack:
+
+Python (Streamlit front-end)
+
+Firebase (Firestore for state + Auth)
+
+OpenAI API (GPT-4 or GPT-3.5)
+
+Optional: Whisper API (for voice), PyPDF2 or ReportLab (for docs)
+

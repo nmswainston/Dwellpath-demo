@@ -1,0 +1,106 @@
+Create an advanced version of the Snowbird – Residency Day Tracker app that helps users avoid becoming unintended tax residents in high-tax states (like NY or CA) by tracking their days and expenses across states. Integrate an AI assistant and enhanced features that ensure compliance, planning, and audit readiness.
+
+✅ Core Requirements:
+Residency Day Tracking
+
+Use GPS to auto-log days in each state
+
+Manual override for users who travel without location services
+
+Clear visual display of total days spent per state and remaining days under 183-day threshold
+
+183-Day Alert System
+
+Real-time alerts as a user nears critical thresholds
+
+Weekly summaries and push/email notifications
+
+State-Based Expense Tracking
+
+Allow tagging of expenses by state
+
+Visual breakdowns and exportable reports
+
+Secure Residency Journal
+
+Let users log travel, housing, employment, etc.
+
+Entries timestamped and stored in Firestore
+
+Searchable and exportable for audits
+
+Cross-Device Sync & Privacy
+
+Firebase Auth for multi-device login
+
+End-to-end encrypted data storage
+
+No third-party sharing
+
+🧠 AI Snowbird Assistant (OpenAI Integration):
+Respond to natural language questions like:
+
+“How many days do I have left in California?”
+
+“Summarize my Arizona expenses for Q1”
+
+“Draft a non-residency affidavit for NY”
+
+“What are the audit red flags for me this year?”
+
+Bonus: Add voice input using Whisper API or browser voice-to-text
+
+Recommend personalized compliance strategies based on trends in user data
+
+🔧 Advanced Features to Include:
+✈️ Smart State Entry/Exit Detection
+Use geofencing or travel pattern inference to log border crossings
+
+Optional: flight/reservation parsing for auto-logging trips
+
+💵 Tax Savings Estimator
+Estimate how much the user is saving by avoiding state income tax
+
+Visualized savings by state and timeline
+
+📆 Calendar Sync
+Integrate with Google Calendar or iCloud
+
+Pre-flag risky trip lengths before they happen
+
+👨‍👩‍👧‍👦 Household Mode
+Let families track multiple profiles in one account
+
+Useful for joint filings or shared travel
+
+📂 Audit Prep Export
+AI-generated PDF bundles with all logs, summaries, and a pre-written audit defense statement
+
+Include customizable affidavit templates
+
+🛑 Location Spoofing Detection
+Warn users if location data seems inconsistent or tampered
+
+Helps maintain credible logs
+
+🧠 AI Compliance Coach
+Ask legal-style questions: "If I rent out my NY home, does that count against me?"
+
+Coach pulls from IRS publications, state tax board guidelines, and case law summaries
+
+🌎 Snowbird Insights (Opt-in)
+Share anonymous user trends: most common states, exit times, audit risks
+
+Optional community dashboard with AI summaries
+
+⚙️ Tech Stack:
+Frontend: Python + Streamlit
+
+Backend: Firebase Auth + Firestore
+
+AI: OpenAI API (GPT-4 for chat, Whisper for voice, DALL·E for PDFs if needed)
+
+Optional: PyPDF2, ReportLab, or DocxTemplate for export generation
+
+Extras: Google Calendar API, geopy, location libs
+

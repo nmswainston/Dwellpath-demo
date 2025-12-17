@@ -1,0 +1,29 @@
+node_modules
+dist
+build
+.env
+.DS_Store
+*.log
+
+# Replit files
+.replit
+replit.nix
+.config/
+
+# Build artifacts
+server/public
+vite.config.ts.*
+*.tar.gz
+
+# OS files
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

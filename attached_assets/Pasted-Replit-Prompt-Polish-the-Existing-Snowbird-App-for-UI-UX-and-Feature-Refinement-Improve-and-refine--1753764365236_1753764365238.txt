@@ -1,0 +1,86 @@
+Replit Prompt: Polish the Existing Snowbird App for UI/UX and Feature Refinement
+Improve and refine the existing Snowbird – Residency Tracker app. Maintain the current core functionality, but focus on polishing the design, improving usability, and making the app feel modern, responsive, and intuitive.
+
+🔧 Objectives:
+Polish UI Styling:
+
+Apply a winter-inspired color palette (light blue, white, icy grays)
+
+Ensure consistent font styling and button sizes
+
+Add hover effects and tooltips for icons and data points
+
+Improve mobile responsiveness across all pages
+
+Enhance Dashboard Visuals:
+
+Add icons or colored badges for state residency risk (e.g., green/yellow/red)
+
+Include a timeline or calendar heatmap of tracked days per state
+
+Use cards or tiles to display current status (e.g., “247 days tracked,” “$42,300 tax savings”)
+
+Improve Sidebar Navigation:
+
+Use icons + labels for clarity
+
+Highlight the active tab
+
+Collapse/expand support for mobile view
+
+Refine Alerts & Notifications:
+
+Make 183-day warning banners more visually distinct (light yellow or red with icon)
+
+Allow dismissing or snoozing alerts
+
+Add tooltips to explain the warning (e.g., “Why this matters”)
+
+Audit Mode Polish:
+
+Improve layout of logs, expenses, and journal entries for export
+
+Format PDF output to be clean, timestamped, and CPA/auditor-friendly
+
+Add export previews before download
+
+Refine AI Assistant UI:
+
+Position as a sidebar or tab with a friendly name (e.g., “Ask Snowbird AI”)
+
+Add typing indicator and loading animation
+
+Log past user queries with timestamps
+
+Support summarizing user data into chat responses
+
+Streamline Onboarding Flow:
+
+Show a step-by-step wizard on first launch:
+
+Set your home states
+
+Set alert thresholds
+
+Choose data sharing preferences
+
+Use modal popups or progress indicators for clarity
+
+General Improvements:
+
+Fix any layout inconsistencies between pages
+
+Add loading spinners where data fetches occur
+
+Smooth out animation transitions between pages/views
+
+Check for accessibility: color contrast, readable fonts, tab navigation
+
+✅ Technologies to Use:
+Streamlit for frontend
+
+CSS modules or custom HTML where needed
+
+Firebase (no changes needed unless performance bottlenecks)
+
+Optional: use streamlit-extras, plotly, or streamlit-echarts for charts

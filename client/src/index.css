@@ -1,0 +1,995 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Brand Typography */
+.font-heading {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Dwellpath Brand Variables */
+:root {
+  /* Light Mode - Dwellpath Palette */
+  /* Light mode: bg #A8AFB9 (off-white), text #202836 (blue-grey) */
+  --background: 215 15% 70%; /* #A8AFB9 - Light mode background (off-white) */
+  --foreground: 215 25% 20%; /* #202836 - Light mode text (blue-grey) */
+  --card: 215 15% 75%; /* Slightly lighter than background */
+  --card-foreground: 215 25% 20%;
+  --popover: 215 15% 75%;
+  --popover-foreground: 215 25% 20%;
+  --primary: 215 25% 20%; /* #202836 - brand-primary */
+  --primary-foreground: 215 15% 70%; /* #A8AFB9 - brand-accent */
+  --secondary: 215 15% 65%;
+  --secondary-foreground: 215 25% 20%;
+  --muted: 215 15% 60%;
+  --muted-foreground: 215 25% 30%;
+  --accent: 215 15% 70%; /* #A8AFB9 - brand-accent */
+  --accent-foreground: 215 25% 20%; /* #202836 - brand-primary */
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 215 15% 70%;
+  --border: 215 15% 55%;
+  --input: 215 15% 65%;
+  --ring: 215 15% 70%;
+  --radius: 0.75rem;
+}
+
+/* Dark Mode - Dwellpath Palette */
+.dark {
+  /* Dark mode: bg #202836 (blue-grey), text #A8AFB9 (off-white) */
+  --background: 215 25% 20%; /* #202836 - Dark mode background (blue-grey) */
+  --foreground: 215 15% 70%; /* #A8AFB9 - Dark mode text (off-white) */
+  --card: 215 25% 18%; /* Slightly darker than background */
+  --card-foreground: 215 15% 70%;
+  --popover: 215 25% 18%;
+  --popover-foreground: 215 15% 70%;
+  --primary: 215 15% 70%;
+  --primary-foreground: 215 25% 20%;
+  --secondary: 215 25% 25%;
+  --secondary-foreground: 215 15% 70%;
+  --muted: 215 25% 30%;
+  --muted-foreground: 215 15% 60%;
+  --accent: 215 15% 70%; /* #A8AFB9 - brand-accent */
+  --accent-foreground: 215 25% 20%; /* brand-primary */
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 215 15% 70%;
+  --border: 215 25% 35%;
+  --input: 215 25% 22%;
+  --ring: 215 15% 70%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: 'Inter', sans-serif !important;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  body {
+    @apply antialiased text-foreground bg-background font-body transition-colors duration-300;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+  }
+
+  /* Force Dwellpath fonts globally with !important */
+  *,
+  *::before,
+  *::after {
+    font-family: 'Inter', sans-serif !important;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  .font-heading,
+  .page-title,
+  .section-title,
+  [class*="CardTitle"],
+  .card-title,
+  [data-testid*="heading"],
+  .heading,
+  .title {
+    font-family: 'Playfair Display', serif !important;
+  }
+
+  /* Specific element targeting for body text */
+  p, span, div, label, button, input, textarea, select, table, td, th, li, a, small,
+  .font-body,
+  .page-subtitle,
+  .section-subtitle,
+  .form-label,
+  [class*="CardDescription"],
+  .card-description,
+  .description,
+  .subtitle,
+  .text-base,
+  .text-sm,
+  .text-xs,
+  .text-lg,
+  .text-xl {
+    font-family: 'Inter', sans-serif !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+
+  /* Dwellpath Brand Specific Styles */
+  .dwellpath-heading {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+  }
+
+  .dwellpath-logo {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  /* Enhanced Button Styles */
+  .btn-dwellpath {
+    @apply rounded-lg shadow-sm hover:shadow-md transition-all duration-200;
+    border-radius: 0.75rem;
+  }
+
+  .btn-dwellpath:hover {
+    box-shadow: 0 0 0 3px hsl(var(--soft-blue) / 0.3);
+  }
+
+  .dark .btn-dwellpath:hover {
+    box-shadow: 0 0 0 3px hsl(214 100% 60% / 0.3);
+  }
+
+  /* Card Enhancements */
+  .card-dwellpath {
+    @apply bg-card border border-border rounded-xl shadow-sm;
+    box-shadow: 0 1px 3px 0 hsl(var(--slate-black) / 0.1), 0 1px 2px 0 hsl(var(--slate-black) / 0.06);
+  }
+
+  .dark .card-dwellpath {
+    background: hsl(215, 25%, 14%);
+    border: 1px solid hsl(215, 15%, 25%);
+    box-shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.4), 0 1px 2px 0 hsl(0 0% 0% / 0.3);
+  }
+
+  /* Solid Modal Backgrounds */
+  .modal-dwellpath {
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .dark .modal-dwellpath {
+    background: hsl(215, 25%, 12%);
+    border: 1px solid hsl(215, 15%, 25%);
+  }
+
+  /* Form Input Enhancements */
+  .input-dwellpath {
+    @apply rounded-lg border border-input px-4 py-3 text-sm transition-colors;
+    background: hsl(var(--background));
+  }
+
+  .input-dwellpath:focus {
+    @apply ring-2 ring-ring ring-offset-2;
+    border-color: hsl(var(--ring));
+  }
+
+  /* Navigation Styling */
+  .nav-dwellpath {
+    background: hsl(var(--background)); /* Match page background */
+    border-right: 1px solid hsl(var(--border));
+    box-shadow: 1px 0 3px 0 hsl(var(--foreground) / 0.05);
+  }
+
+  .dark .nav-dwellpath {
+    background: hsl(var(--background)); /* Match page background */
+    border-right: 1px solid hsl(var(--border));
+    box-shadow: 1px 0 3px 0 hsl(0 0% 0% / 0.3);
+  }
+
+  /* Dropdown and Popover Solid Backgrounds */
+  .dropdown-content,
+  .popover-content,
+  .select-content,
+  .command-list,
+  .tooltip-content,
+  [data-radix-popper-content-wrapper],
+  [data-radix-select-content],
+  [data-radix-dropdown-menu-content],
+  [data-radix-popover-content],
+  [data-radix-tooltip-content],
+  [data-radix-command-list] {
+    background: hsl(var(--background)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    box-shadow: 0 4px 6px -1px hsl(var(--foreground) / 0.1), 0 2px 4px -1px hsl(var(--foreground) / 0.06) !important;
+  }
+
+  .dark .dropdown-content,
+  .dark .popover-content,
+  .dark .select-content,
+  .dark .command-list,
+  .dark .tooltip-content,
+  .dark [data-radix-popper-content-wrapper],
+  .dark [data-radix-select-content],
+  .dark [data-radix-dropdown-menu-content],
+  .dark [data-radix-popover-content],
+  .dark [data-radix-tooltip-content],
+  .dark [data-radix-command-list] {
+    background: hsl(215, 25%, 14%) !important;
+    border: 1px solid hsl(214 20% 40%) !important;
+    box-shadow: 0 4px 6px -1px hsl(0 0% 0% / 0.3), 0 2px 4px -1px hsl(0 0% 0% / 0.2) !important;
+  }
+
+  /* Menu Item Hover States */
+  .dropdown-item:hover,
+  .select-item:hover,
+  .command-item:hover,
+  [data-radix-dropdown-menu-item]:hover,
+  [data-radix-select-item]:hover,
+  [data-radix-command-item]:hover {
+    background: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
+  }
+
+  .dark .dropdown-item:hover,
+  .dark .select-item:hover,
+  .dark .command-item:hover,
+  .dark [data-radix-dropdown-menu-item]:hover,
+  .dark [data-radix-select-item]:hover,
+  .dark [data-radix-command-item]:hover {
+    background: hsl(214 25% 20%) !important;
+    color: hsl(213 27% 84%) !important;
+  }
+
+  /* Form Select Elements */
+  select,
+  .select-trigger,
+  [data-radix-select-trigger] {
+    background: hsl(var(--background)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+  }
+
+  .dark select,
+  .dark .select-trigger,
+  .dark [data-radix-select-trigger] {
+    background: hsl(215, 25%, 14%) !important;
+    border: 1px solid hsl(214 20% 40%) !important;
+    color: hsl(213 27% 84%) !important;
+  }
+
+  /* Select Dropdown Text Color Fixes - More Specific */
+  .dark [data-radix-select-content] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-radix-select-item] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-radix-select-item] * {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-radix-select-value] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-radix-select-label] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  /* Force all select content to use light text */
+  .dark [data-radix-select-content] * {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-radix-select-viewport] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-radix-select-viewport] * {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  /* Ensure placeholder text is visible */
+  .dark [data-radix-select-trigger][data-placeholder] {
+    color: hsl(213 27% 70%) !important;
+  }
+
+  /* Command and Popover Content Text */
+  .dark [data-radix-command-list] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-radix-command-item] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-radix-popover-content] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-radix-dropdown-menu-content] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-radix-dropdown-menu-item] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  /* Additional Select component text fixes - Enhanced */
+  .dark .select-item {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark .select-label {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark .select-value {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  /* Force light text on all select-related elements */
+  .dark [class*="select"] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [role="option"] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [role="listbox"] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [role="combobox"] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  /* Ultimate fallback for any dropdown content */
+  .dark [data-state="open"] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-state="open"] * {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  /* Nuclear option - force all possible select elements */
+  .dark [data-radix-popper-content-wrapper] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-radix-popper-content-wrapper] * {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark div[role="listbox"] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark div[role="listbox"] * {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark div[role="option"] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark div[role="option"] * {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  /* Override any potential inheritance */
+  .dark [data-radix-select-portal] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [data-radix-select-portal] * {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  /* Final emergency override - target by position */
+  .dark body [data-radix-select-content] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark body [data-radix-select-content] * {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  /* Target by z-index level */
+  .dark [style*="z-index"] [data-radix-select-item] {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  .dark [style*="z-index"] [data-radix-select-item] * {
+    color: hsl(213 27% 84%) !important;
+  }
+
+  /* Dialog/Modal Backgrounds */
+  .dialog-content,
+  [data-radix-dialog-content] {
+    background: hsl(var(--background)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+  }
+
+  .dark .dialog-content,
+  .dark [data-radix-dialog-content] {
+    background: hsl(215, 25%, 14%) !important;
+    border: 1px solid hsl(214 20% 40%) !important;
+  }
+
+  /* Dark Mode Border and Contrast Fixes */
+  .dark .border {
+    border-color: hsl(214 20% 40%);
+  }
+  
+  .dark .border-border {
+    border-color: hsl(214 20% 40%);
+  }
+  
+  .dark .border-slate-200 {
+    border-color: hsl(214 20% 40%);
+  }
+  
+  .dark .border-slate-300 {
+    border-color: hsl(214 20% 45%);
+  }
+  
+  .dark .border-gray-200 {
+    border-color: hsl(214 20% 40%);
+  }
+  
+  .dark .border-gray-300 {
+    border-color: hsl(214 20% 45%);
+  }
+  
+  .dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: hsl(214 20% 40%);
+  }
+  
+  .dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: hsl(214 20% 40%);
+  }
+
+  /* Table borders */
+  .dark .border-collapse td,
+  .dark .border-collapse th {
+    border-color: hsl(214 20% 40%);
+  }
+
+  /* Card and component borders */
+  .dark [class*="border"] {
+    border-color: hsl(214 20% 40%);
+  }
+
+  /* Specific component overrides */
+  .dark .bg-card {
+    background-color: hsl(214 25% 23%);
+    border-color: hsl(214 20% 40%);
+  }
+
+  .dark .bg-popover {
+    background-color: hsl(214 25% 20%);
+    border-color: hsl(214 20% 40%);
+  }
+
+  /* Text contrast fixes */
+  .dark .text-slate-600 {
+    color: hsl(214 32% 91%);
+  }
+  
+  .dark .text-slate-500 {
+    color: hsl(214 32% 91%);
+  }
+  
+  .dark .text-gray-600 {
+    color: hsl(214 32% 91%);
+  }
+  
+  .dark .text-gray-500 {
+    color: hsl(214 32% 91%);
+  }
+  
+  .dark .text-muted-foreground {
+    color: hsl(214 32% 91%);
+  }
+
+  .dark .text-slate-400 {
+    color: hsl(214 32% 91%);
+  }
+
+  .dark .text-gray-400 {
+    color: hsl(214 32% 91%);
+  }
+
+  /* Button and interactive element fixes */
+  .dark .bg-white {
+    background-color: hsl(214 25% 23%);
+    color: hsl(213 27% 84%);
+  }
+  
+  .dark .hover\:bg-gray-50:hover {
+    background-color: hsl(214 25% 26%);
+  }
+  
+  .dark .hover\:bg-slate-50:hover {
+    background-color: hsl(214 25% 26%);
+  }
+
+  .dark .bg-gray-50 {
+    background-color: hsl(214 25% 25%);
+  }
+
+  .dark .bg-slate-50 {
+    background-color: hsl(214 25% 25%);
+  }
+
+  .dark .bg-gray-100 {
+    background-color: hsl(214 25% 27%);
+  }
+
+  .dark .bg-slate-100 {
+    background-color: hsl(214 25% 27%);
+  }
+
+  /* Enhanced card and component styling */
+  .dark .shadow-sm {
+    box-shadow: 0 1px 2px 0 hsl(0 0% 0% / 0.2);
+  }
+
+  .dark .shadow {
+    box-shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.3), 0 1px 2px -1px hsl(0 0% 0% / 0.3);
+  }
+
+  .dark .shadow-lg {
+    box-shadow: 0 10px 15px -3px hsl(0 0% 0% / 0.3), 0 4px 6px -4px hsl(0 0% 0% / 0.3);
+  }
+
+  /* Ring and focus states */
+  .dark .ring-blue-500 {
+    --tw-ring-color: hsl(220 14% 96%);
+  }
+
+  .dark .ring-blue-300 {
+    --tw-ring-color: hsl(214 32% 91%);
+  }
+
+  /* Status and accent colors */
+  .dark .bg-blue-50 {
+    background-color: hsl(214 25% 25%);
+  }
+
+  .dark .bg-green-50 {
+    background-color: hsl(215 25% 20%);
+  }
+
+  .dark .bg-red-50 {
+    background-color: hsl(0 25% 25%);
+  }
+
+  .dark .bg-yellow-50 {
+    background-color: hsl(45 25% 25%);
+  }
+
+  .dark .text-blue-600 {
+    color: hsl(214 32% 91%);
+  }
+
+  .dark .text-green-600 {
+    color: hsl(215 15% 70%);
+  }
+
+  .dark .text-red-600 {
+    color: hsl(0 50% 85%);
+  }
+
+  .dark .text-yellow-600 {
+    color: hsl(45 50% 85%);
+  }
+
+  /* Icon and svg contrast */
+  .dark svg {
+    filter: brightness(1.2) contrast(1.1);
+  }
+
+  /* Table and list improvements */
+  .dark .odd\:bg-white:nth-child(odd) {
+    background-color: hsl(214 25% 21%);
+  }
+}
+
+/* Ensure all dropdown and popover components have solid backgrounds */
+[data-radix-select-content],
+[data-radix-dropdown-menu-content],
+[data-radix-popover-content] {
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+/* Additional fallbacks for any other dropdown-like components */
+.bg-popover {
+  background: hsl(var(--card)) !important;
+}
+
+/* Dark mode specific overrides for dropdowns */
+.dark [data-radix-select-content],
+.dark [data-radix-dropdown-menu-content],
+.dark [data-radix-popover-content] {
+  background: hsl(214 25% 23%) !important;
+  border: 1px solid hsl(214 20% 40%) !important;
+}
+
+/* Ensure toast notifications are always visible with proper z-index */
+[data-radix-toast-viewport] {
+  z-index: 999999 !important;
+}
+
+[data-radix-toast-root] {
+  z-index: 999999 !important;
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+.dark [data-radix-toast-root] {
+  background: hsl(214 25% 23%) !important;
+  border: 1px solid hsl(214 20% 40%) !important;
+}
+
+/* Dark mode even row background */
+.dark .even\:bg-gray-50:nth-child(even) {
+  background-color: hsl(214 25% 25%);
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.25s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.4);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.6);
+}
+
+/* Utility Classes */
+.text-domicile-primary {
+  color: hsl(var(--navy-blue));
+}
+
+.dark .text-domicile-primary {
+  color: hsl(214 100% 60%);
+}
+
+.bg-domicile-solid {
+  background: hsl(var(--background));
+}
+
+/* Professional button spacing and typography */
+.btn-primary {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-secondary {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Consistent heading hierarchy */
+.page-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.8;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin-bottom: 0.375rem;
+}
+
+.section-subtitle {
+  font-size: 0.875rem;
+  font-weight: 400;
+  opacity: 0.7;
+  margin-bottom: 1rem;
+}
+
+/* Form spacing and consistency */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Card grid improvements */
+.card-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.card-grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.card-grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.card-grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* Dark mode icon and text contrast improvements */
+.dark .text-slate-600 {
+  color: hsl(215, 15%, 65%) !important;
+}
+
+.dark .text-slate-800 {
+  color: hsl(210 20% 98%) !important;
+}
+
+.dark .text-slate-500 {
+  color: hsl(210 11% 71%) !important;
+}
+
+.dark .text-slate-900 {
+  color: hsl(210 20% 98%) !important;
+}
+
+.dark .text-slate-700 {
+  color: hsl(215, 15%, 75%) !important;
+}
+
+.dark .text-gray-600 {
+  color: hsl(215, 15%, 65%) !important;
+}
+
+.dark .text-gray-500 {
+  color: hsl(215, 15%, 60%) !important;
+}
+
+/* Better button and icon contrast in dark mode */
+.dark button[class*="text-slate-"],
+.dark .text-slate-600,
+.dark .text-slate-700 {
+  transition: all 0.2s ease-in-out;
+}
+
+.dark button[class*="text-slate-"]:hover,
+.dark .hover\:text-blue-700:hover {
+  color: hsl(214, 100%, 70%) !important;
+}
+
+/* Enhanced visibility for icons in dark mode */
+.dark svg {
+  filter: brightness(1.2) contrast(1.1);
+}
+
+/* Dwellpath Hero Gradient - Custom gradient class for hero sections */
+.dwellpath-hero-gradient {
+  background: linear-gradient(135deg, hsl(220 26% 14%) 0%, hsl(215 25% 27%) 35%, hsl(210 40% 98%) 100%);
+}
+
+.dark .dwellpath-hero-gradient {
+  background: linear-gradient(135deg, hsl(215 28% 17%) 0%, hsl(214 25% 25%) 50%, hsl(213 27% 35%) 100%);
+}
+
+/* Better component contrast */
+.bg-white {
+  background-color: hsl(var(--card)) !important;
+}
+
+.dark .bg-white {
+  background-color: hsl(215, 25%, 14%) !important;
+}
+
+.bg-gray-50 {
+  background-color: hsl(var(--muted)) !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: hsl(215, 15%, 18%) !important;
+}
+
+.bg-gray-100 {
+  background-color: hsl(var(--muted)) !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: hsl(215, 15%, 20%) !important;
+}
+
+/* Ensure proper text contrast */
+.text-gray-900 {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .text-gray-900 {
+  color: hsl(210, 20%, 98%) !important;
+}
+
+.text-gray-800 {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .text-gray-800 {
+  color: hsl(210, 20%, 95%) !important;
+}
+
+.dark .bg-domicile-gradient {
+  background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(220, 25%, 12%) 100%);
+}
+
+/* Page Container */
+.page-container {
+  @apply space-y-4;
+  width: 100%;
+}
+
+/* Layout Utilities */
+.section-spacing {
+  @apply mb-6;
+}
+
+.header-spacing {
+  @apply mb-4;
+}
+
+.grid-flow-4 {
+  @apply grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4;
+}
+
+.grid-flow-2 {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-4;
+}
+
+.grid-flow-3 {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+/* Compact spacing for better fitting */
+.compact-spacing {
+  @apply space-y-3;
+}
+
+.tight-grid {
+  @apply gap-3;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .grid-flow-4 {
+    @apply grid-cols-1 md:grid-cols-2;
+  }
+  
+  .grid-flow-3 {
+    @apply grid-cols-1 md:grid-cols-2;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    @apply space-y-3;
+  }
+  
+  .card-domicile {
+    @apply rounded-lg;
+  }
+  
+  .section-spacing {
+    @apply mb-4;
+  }
+  
+  .header-spacing {
+    @apply mb-2;
+  }
+  
+  .grid-flow-4,
+  .grid-flow-3,
+  .grid-flow-2 {
+    @apply grid-cols-1 gap-3;
+  }
+  
+  /* Mobile sidebar adjustments */
+  .mobile-content-shift {
+    margin-left: 0 !important;
+  }
+}
+
+/* Winter Card - Consistent styling for all cards */
+.winter-card {
+  @apply rounded-xl border bg-card shadow-sm;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border-color: hsl(var(--border));
+  background-color: hsl(var(--card));
+  overflow: hidden;
+}
+
+.dark .winter-card {
+  background-color: hsl(215, 25%, 18%);
+  border-color: hsl(214, 20%, 40%);
+  box-shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.3), 0 1px 2px -1px hsl(0 0% 0% / 0.2);
+}

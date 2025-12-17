@@ -1,0 +1,237 @@
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Plus, MapPin, AlertTriangle, CheckCircle } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Link } from "wouter";
+import { cn } from "@/lib/utils";
+
+type ResidencyStats = {
+  state: string;
+  totalDays: number;
+  daysRemaining: number;
+  isAtRisk: boolean;
+};
+
+const US_STATES = [
+  { code: "AL", name: "Alabama" },
+  { code: "AK", name: "Alaska" },
+  { code: "AZ", name: "Arizona" },
+  { code: "AR", name: "Arkansas" },
+  { code: "CA", name: "California" },
+  { code: "CO", name: "Colorado" },
+  { code: "CT", name: "Connecticut" },
+  { code: "DE", name: "Delaware" },
+  { code: "FL", name: "Florida" },
+  { code: "GA", name: "Georgia" },
+  { code: "HI", name: "Hawaii" },
+  { code: "ID", name: "Idaho" },
+  { code: "IL", name: "Illinois" },
+  { code: "IN", name: "Indiana" },
+  { code: "IA", name: "Iowa" },
+  { code: "KS", name: "Kansas" },
+  { code: "KY", name: "Kentucky" },
+  { code: "LA", name: "Louisiana" },
+  { code: "ME", name: "Maine" },
+  { code: "MD", name: "Maryland" },
+  { code: "MA", name: "Massachusetts" },
+  { code: "MI", name: "Michigan" },
+  { code: "MN", name: "Minnesota" },
+  { code: "MS", name: "Mississippi" },
+  { code: "MO", name: "Missouri" },
+  { code: "MT", name: "Montana" },
+  { code: "NE", name: "Nebraska" },
+  { code: "NV", name: "Nevada" },
+  { code: "NH", name: "New Hampshire" },
+  { code: "NJ", name: "New Jersey" },
+  { code: "NM", name: "New Mexico" },
+  { code: "NY", name: "New York" },
+  { code: "NC", name: "North Carolina" },
+  { code: "ND", name: "North Dakota" },
+  { code: "OH", name: "Ohio" },
+  { code: "OK", name: "Oklahoma" },
+  { code: "OR", name: "Oregon" },
+  { code: "PA", name: "Pennsylvania" },
+  { code: "RI", name: "Rhode Island" },
+  { code: "SC", name: "South Carolina" },
+  { code: "SD", name: "South Dakota" },
+  { code: "TN", name: "Tennessee" },
+  { code: "TX", name: "Texas" },
+  { code: "UT", name: "Utah" },
+  { code: "VT", name: "Vermont" },
+  { code: "VA", name: "Virginia" },
+  { code: "WA", name: "Washington" },
+  { code: "WV", name: "West Virginia" },
+  { code: "WI", name: "Wisconsin" },
+  { code: "WY", name: "Wyoming" },
+];
+
+export default function ResidencyTracker() {
+  const { data: residencyStats = [], isLoading } = useQuery<ResidencyStats[]>({
+    queryKey: ["/api/dashboard/residency-stats"],
+  });
+
+  const getProgressColor = (totalDays: number, isAtRisk: boolean) => {
+    if (isAtRisk) return "bg-gradient-to-r from-brand-bg-dark to-brand-bg-dark/80";
+    if (totalDays > 120) return "bg-gradient-to-r from-brand-bg-dark/80 to-brand-bg-dark/60";
+    return "bg-brand-primary";
+  };
+
+  const getProgressValue = (totalDays: number) => {
+    return Math.min((totalDays / 183) * 100, 100);
+  };
+
+  const getStateGradient = (index: number) => {
+    const gradients = [
+      "from-brand-bg-dark to-brand-bg-dark/80",
+      "from-brand-bg-dark/90 to-brand-bg-dark/70", 
+      "from-brand-bg-dark/80 to-brand-bg-dark/60",
+      "from-brand-primary to-brand-accent",
+      "from-brand-bg-dark/70 to-brand-bg-dark/50",
+      "from-brand-bg-dark/60 to-brand-bg-dark/40",
+    ];
+    return gradients[index % gradients.length];
+  };
+
+  if (isLoading) {
+    return (
+      <Card className="mb-8">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="font-heading text-lg font-bold text-brand-primary dark:text-foreground flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-brand-primary dark:text-accent" />
+              2024 Residency Status
+            </CardTitle>
+            <Skeleton className="h-9 w-20" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="border border-border rounded-xl p-4 bg-card shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <Skeleton className="w-8 h-8 rounded-lg" />
+                    <div>
+                      <Skeleton className="h-4 w-20 mb-1" />
+                      <Skeleton className="h-3 w-16" />
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <Skeleton className="h-6 w-16 mb-1" />
+                    <Skeleton className="h-4 w-20" />
+                  </div>
+                </div>
+                <Skeleton className="w-full h-3 rounded-full" />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="mb-8 winter-card">
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <CardTitle className="font-heading text-lg font-bold text-brand-primary dark:text-foreground flex items-center gap-2">
+            <MapPin className="h-5 w-5 text-brand-primary dark:text-accent" />
+            2024 Residency Status
+          </CardTitle>
+          <Link href="/log-days">
+            <Button size="sm">
+              <Plus className="mr-1 h-4 w-4" />
+              Log Days
+            </Button>
+          </Link>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {residencyStats.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+              <Plus className="w-8 h-8 text-blue-600" />
+            </div>
+            <h3 className="text-lg font-semibold text-brand-text-light dark:text-brand-text-dark mb-2">Start Your Journey</h3>
+            <p className="text-brand-text-light/60 dark:text-brand-text-dark/60 mb-6 max-w-sm mx-auto">Begin tracking your residency days to stay compliant with state tax regulations.</p>
+            <Link href="/log-days">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Log Your First Days
+              </Button>
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {residencyStats.map((stat: ResidencyStats, index: number) => {
+              const stateName = US_STATES.find(s => s.code === stat.state)?.name || stat.state;
+              const progressValue = getProgressValue(stat.totalDays);
+              const isHighTaxState = ['CA', 'NY', 'NJ', 'CT', 'HI', 'IL'].includes(stat.state);
+              
+              return (
+                <div key={stat.state} className="winter-card border-l-4 border-l-blue-400 p-5 hover:scale-[1.02] transition-transform duration-200">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-brand-accent dark:bg-accent rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg">
+                        {stat.state}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-brand-text-light dark:text-brand-text-dark">{stateName}</h4>
+                        <div className="flex items-center space-x-2">
+                          <p className="text-sm text-brand-text-light/60 dark:text-brand-text-dark/60">
+                            {isHighTaxState ? "High-tax state" : "No state tax"}
+                          </p>
+                          {isHighTaxState && (
+                            <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center space-x-2">
+                        <p className="text-2xl font-bold text-brand-text-light dark:text-brand-text-dark">{stat.totalDays}</p>
+                        <div className={cn(
+                          "state-badge",
+                          stat.isAtRisk ? "risk-critical" : 
+                          stat.totalDays > 120 ? "risk-medium" : "risk-low"
+                        )}>
+                          {stat.isAtRisk ? "RISK" : stat.totalDays > 120 ? "WATCH" : "SAFE"}
+                        </div>
+                      </div>
+                      <p className="text-sm text-brand-text-light/60 dark:text-brand-text-dark/60">
+                        {stat.daysRemaining} days remaining
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="relative">
+                    <Progress 
+                      value={progressValue}
+                      className="w-full h-3"
+                    />
+                    <div className="flex justify-between text-xs text-brand-text-light/60 dark:text-brand-text-dark/60 mt-1">
+                      <span>0</span>
+                      <span className={`font-medium ${
+                        stat.isAtRisk 
+                          ? "text-red-600" 
+                          : stat.totalDays > 120 
+                            ? "text-yellow-600" 
+                            : "text-brand-primary"
+                      }`}>
+                        {stat.totalDays}/183
+                      </span>
+                      <span>183</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
