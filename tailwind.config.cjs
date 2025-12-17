@@ -1,13 +1,9 @@
-import type { Config } from "tailwindcss";
-// Temporarily commenting out plugins to test
-// import tailwindcssAnimate from "tailwindcss-animate";
-// import tailwindcssTypography from "@tailwindcss/typography";
-
-export default {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   darkMode: ["class"],
   content: [
-    "./index.html",
-    "./src/**/*.{js,jsx,ts,tsx}",
+    "./client/index.html",
+    "./client/src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {
@@ -69,38 +65,30 @@ export default {
         },
         // Dwellpath Brand Colors - Semantic
         brand: {
-          primary: '#202836',
-          accent: '#A8AFB9',
+          primary: "#202836",
+          accent: "#A8AFB9",
           bg: {
-            dark: '#202836',
-            light: '#A8AFB9',
+            dark: "#202836",
+            light: "#A8AFB9",
           },
           text: {
-            dark: '#A8AFB9',
-            light: '#202836',
+            dark: "#A8AFB9",
+            light: "#202836",
           },
         },
       },
       fontFamily: {
-        heading: ['"Playfair Display"', 'serif'],
-        body: ['Inter', 'sans-serif'],
+        heading: ['"Playfair Display"', "serif"],
+        body: ["Inter", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {
@@ -109,6 +97,7 @@ export default {
       },
     },
   },
-  plugins: [], // Temporarily removed to test
-  // plugins: [tailwindcssAnimate, tailwindcssTypography],
-} satisfies Config;
+  plugins: [],
+};
+
+

@@ -4,6 +4,11 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 
 export default defineConfig({
+  // Default to Demo Mode unless explicitly disabled.
+  // This ensures `npm run dev` works on a fresh clone with no backend or env file.
+  define: {
+    "import.meta.env.VITE_DEMO_MODE": JSON.stringify(process.env.VITE_DEMO_MODE ?? "true"),
+  },
   plugins: [
     react(),
     tailwindcss(),

@@ -4,7 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { apiRequest } from "@/lib/queryClient";
+import { propertiesApi } from "@/lib/apiClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { handleUnauthorized } from "@/utils/handleUnauthorized";
 import AppLayout from "@/components/layout/app-layout";
@@ -124,7 +124,7 @@ function EditPropertyForm({ property, onSuccess }: { property: Property; onSucce
         purchaseDate: data.purchaseDate ? new Date(data.purchaseDate) : null,
         estimatedValue: data.estimatedValue || null,
       };
-      return apiRequest("PUT", `/api/properties/${property.id}`, payload);
+      return propertiesApi.update(property.id, payload as any);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/properties"] });
@@ -150,7 +150,7 @@ function EditPropertyForm({ property, onSuccess }: { property: Property; onSucce
 
   const deletePropertyMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest("DELETE", `/api/properties/${property.id}`);
+      return propertiesApi.delete(property.id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/properties"] });
@@ -455,8 +455,7 @@ function PropertyForm({ onSuccess }: { onSuccess: () => void }) {
         purchaseDate: data.purchaseDate ? new Date(data.purchaseDate) : null,
         estimatedValue: data.estimatedValue || null,
       };
-      const response = await apiRequest("POST", "/api/properties", payload);
-      return response;
+      return propertiesApi.create(payload as any);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/properties"] });

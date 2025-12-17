@@ -635,8 +635,119 @@ export const onboardingApi = {
         updatedAt: new Date(),
       } as OnboardingTour;
       mockData.onboardingTour = tour;
-      mockData.onboardingSteps = [];
-      return { tour, steps: [] };
+      const steps: OnboardingStep[] = [
+        {
+          id: generateId(),
+          tourId: tour.id,
+          stepNumber: 1,
+          stepType: "welcome",
+          title: "Welcome to Dwellpath",
+          description: "A polished demo experience with realistic mock data.",
+          targetElement: null,
+          content: {
+            headline: "Precision residency tracking, made elegant.",
+            bullets: [
+              "Track days across states",
+              "Capture audit-ready proof points",
+              "Stay ahead of 183-day thresholds",
+            ],
+          },
+          isCompleted: false,
+          completedAt: null,
+          createdAt: new Date(),
+        } as OnboardingStep,
+        {
+          id: generateId(),
+          tourId: tour.id,
+          stepNumber: 2,
+          stepType: "profile_setup",
+          title: "Your profile",
+          description: "We’ll tailor the dashboard for your residency pattern.",
+          targetElement: "#profile-form",
+          content: {
+            primaryState: userProfile?.primaryState || "FL",
+            secondaryState: userProfile?.secondaryState || "NY",
+            riskTolerance: userProfile?.riskTolerance || "medium",
+          },
+          isCompleted: false,
+          completedAt: null,
+          createdAt: new Date(),
+        } as OnboardingStep,
+        {
+          id: generateId(),
+          tourId: tour.id,
+          stepNumber: 3,
+          stepType: "feature_intro",
+          title: "Dashboard highlights",
+          description: "Key signals at a glance.",
+          targetElement: "#sidebar-navigation",
+          content: { features: ["Residency Logs", "Alerts", "Export", "AI Assistant"] },
+          isCompleted: false,
+          completedAt: null,
+          createdAt: new Date(),
+        } as OnboardingStep,
+        {
+          id: generateId(),
+          tourId: tour.id,
+          stepNumber: 4,
+          stepType: "recommendation",
+          title: "Recommended next steps",
+          description: "Demo recommendations that feel product-ready.",
+          targetElement: null,
+          content: {
+            recommendations: [
+              {
+                id: "rec_001",
+                type: "strategy",
+                priority: "high",
+                title: "Consolidate NY trips",
+                description: "Fewer, longer trips reduce accidental day creep and simplify documentation.",
+                actionItems: ["Batch meetings", "Prefer Zoom for low-stakes touchpoints"],
+              },
+              {
+                id: "rec_002",
+                type: "tip",
+                priority: "medium",
+                title: "Capture monthly proof points",
+                description: "2–3 proof points per month is a strong habit for audit readiness.",
+                actionItems: ["Save utility bill PDF", "Keep appointment receipts"],
+              },
+            ],
+          },
+          isCompleted: false,
+          completedAt: null,
+          createdAt: new Date(),
+        } as OnboardingStep,
+        {
+          id: generateId(),
+          tourId: tour.id,
+          stepNumber: 5,
+          stepType: "feature_intro",
+          title: "Set up your tracking",
+          description: "Log days and keep your portfolio tidy.",
+          targetElement: "#residency-logs",
+          content: { setupTasks: ["Log a trip", "Review alerts", "Export a report"] },
+          isCompleted: false,
+          completedAt: null,
+          createdAt: new Date(),
+        } as OnboardingStep,
+        {
+          id: generateId(),
+          tourId: tour.id,
+          stepNumber: 6,
+          stepType: "completion",
+          title: "You’re all set",
+          description: "Explore the app—everything runs without a backend in Demo Mode.",
+          targetElement: null,
+          content: { nextSteps: ["Open Dashboard", "Try AI Assistant", "Export a compliance summary"] },
+          isCompleted: false,
+          completedAt: null,
+          createdAt: new Date(),
+        } as OnboardingStep,
+      ];
+
+      mockData.onboardingSteps = steps;
+      return { tour, steps };
     }
     return realApiCall("/api/onboarding/tour/start", {
       method: "POST",

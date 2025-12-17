@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { journalApi } from "@/lib/apiClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { handleUnauthorized } from "@/utils/handleUnauthorized";
 import AppLayout from "@/components/layout/app-layout";
@@ -17,7 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon, Plus, Edit, Trash2, Book, Search } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
-import { JournalEntry } from "@shared/schema";
+import type { JournalEntry } from "@shared/schema";
 import { StaggeredPageContent } from "@/components/layout/page-transition";
 
 const US_STATES = [
@@ -86,16 +86,6 @@ const JOURNAL_CATEGORIES = [
   "Other"
 ];
 
-interface JournalEntry {
-  id: string;
-  entryDate: string;
-  state?: string;
-  title: string;
-  content: string;
-  category: string;
-  createdAt: string;
-}
-
 export default function Journal() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading } = useAuth();
@@ -124,7 +114,7 @@ export default function Journal() {
 
   const createEntryMutation = useMutation({
     mutationFn: async (data: any) => {
-      await apiRequest("POST", "/api/journal-entries", data);
+      await journalApi.create(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/journal-entries"] });
@@ -149,7 +139,7 @@ export default function Journal() {
 
   const updateEntryMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: any }) => {
-      await apiRequest("PUT", `/api/journal-entries/${id}`, data);
+      await journalApi.update(id, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/journal-entries"] });
@@ -174,7 +164,7 @@ export default function Journal() {
 
   const deleteEntryMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/journal-entries/${id}`);
+      await journalApi.delete(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/journal-entries"] });

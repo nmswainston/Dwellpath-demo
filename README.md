@@ -3,7 +3,24 @@ Dwellpath - Precision residency tracking for modern wealth
 
 ## Quick Start
 
-### Running in Preview Mode (no DB)
+### Demo Mode (Netlify-ready)
+
+This repo is configured to run as a **static SPA** (Vite) with **no backend required**.
+
+- **Local dev**: `npm run dev` (client-only)
+- **Build**: `npm run build` outputs to `dist/`
+- **Netlify**: `netlify.toml` includes SPA redirects so refresh works on any route
+
+#### Demo Mode flag
+
+Demo mode is controlled via Vite env:
+
+- `VITE_DEMO_MODE=true` → uses in-browser mock data (no `/api` calls)
+- `VITE_DEMO_MODE=false` → uses real `/api/...` endpoints (only if you run the optional server)
+
+Copy `.env.example` to `.env` if you want to override defaults.
+
+### Running in Preview Mode (legacy server, no DB)
 
 The app can run locally without a database for preview and development purposes. Simply run:
 

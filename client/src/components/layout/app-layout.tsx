@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Sidebar from "./sidebar";
 import Header from "./header";
 import FeedbackWidget from "@/components/feedback/feedback-widget";
+import Footer from "@/components/Footer";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -32,6 +33,7 @@ export default function AppLayout({ children, title, subtitle }: AppLayoutProps)
         <main className="flex-1 p-3 lg:p-5 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-4">
             {children}
+            <Footer />
           </div>
         </main>
       </div>

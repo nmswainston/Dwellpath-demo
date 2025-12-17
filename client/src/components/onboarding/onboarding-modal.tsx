@@ -35,7 +35,9 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { userApi } from "@/lib/apiClient";
+
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
 
 const US_STATES = [
   "Alabama",
@@ -213,12 +215,8 @@ export default function OnboardingModal({
   const handleComplete = async () => {
     setIsLoading(true);
     try {
-      if (import.meta.env.DEV) {
-        // DEV-ONLY: mock success so onboarding can complete
-        console.log("DEV: skipping /api/user/onboarding, mock success with data:", onboardingData);
-      } else {
-        await apiRequest("POST", "/api/user/onboarding", onboardingData);
-      }
+      // In demo mode we never call a backend.
+      await userApi.completeOnboarding(onboardingData);
 
       toast({
         title: "Configuration Complete",

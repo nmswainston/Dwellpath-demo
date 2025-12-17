@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { aiApi } from "@/lib/apiClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { handleUnauthorized } from "@/utils/handleUnauthorized";
 import AppLayout from "@/components/layout/app-layout";
@@ -106,13 +106,13 @@ export default function Export() {
 
   const complianceSummaryMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/ai/compliance-summary", { 
-        year: parseInt(exportYear) 
-      });
-      return await response.json();
+      // In demo mode this returns a string; on server it returns an object.
+      return aiApi.complianceSummary(parseInt(exportYear));
     },
     onSuccess: (data) => {
-      const blob = new Blob([generateComplianceReport(data)], { type: 'text/plain' });
+      // If data is already a string (demo mode), export it as-is.
+      const content = typeof data === "string" ? data : generateComplianceReport(data);
+      const blob = new Blob([content], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -143,11 +143,7 @@ export default function Export() {
   const auditLetterMutation = useMutation({
     mutationFn: async () => {
       if (!selectedState) throw new Error("State is required");
-      const response = await apiRequest("POST", "/api/ai/audit-letter", { 
-        state: selectedState,
-        year: parseInt(exportYear)
-      });
-      return await response.json();
+      return aiApi.auditLetter(selectedState, parseInt(exportYear));
     },
     onSuccess: (data) => {
       setLetterContent(data.letter);

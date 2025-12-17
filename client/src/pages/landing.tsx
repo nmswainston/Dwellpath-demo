@@ -5,11 +5,10 @@ import { DwellpathLogo } from "@/components/branding/dwellpath-logo";
 import { DEV_MODE } from "@/dev";
 
 export default function Landing() {
+  const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
+
   return (
-    <div className="min-h-screen"
-         style={{ 
-           background: 'linear-gradient(135deg, hsl(220 26% 14%) 0%, hsl(215 25% 27%) 35%, hsl(210 40% 98%) 100%)'
-         }}>
+    <div className="min-h-screen landing-gradient">
       <header className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-center">
           <DwellpathLogo variant="default" size="lg" />
@@ -19,15 +18,15 @@ export default function Landing() {
       <main className="container mx-auto px-4 pb-12">
         {/* Hero Section */}
         <section className="text-center mb-16 animate-fade-in">
-          <h1 className="font-heading text-3xl md:text-5xl font-light mb-3" style={{ color: 'hsl(210 40% 98%)' }}>
+          <h1 className="font-heading text-3xl md:text-5xl font-light mb-3 landing-title">
             Track. Prove. Protect.
           </h1>
           
-          <h2 className="text-xl md:text-2xl font-medium mb-4" style={{ color: 'hsl(214 32% 91%)' }}>
+          <h2 className="text-xl md:text-2xl font-medium mb-4 landing-subtitle">
             Precision residency tracking for modern wealth
           </h2>
           
-          <p className="text-base mb-6 max-w-2xl mx-auto leading-relaxed" style={{ color: 'hsl(213 27% 84%)' }}>
+          <p className="text-base mb-6 max-w-2xl mx-auto leading-relaxed landing-copy">
             Stay mobile. Stay compliant. Dwellpath provides elite individuals with audit-ready documentation and professional-grade residency tracking to protect your wealth from high-tax jurisdictions.
           </p>
           
@@ -36,6 +35,10 @@ export default function Landing() {
               size="lg" 
               onClick={() => {
                 // Force full page navigation to bypass client router
+                if (DEMO_MODE) {
+                  window.location.assign("/");
+                  return;
+                }
                 if (!DEV_MODE) {
                   window.location.assign('/api/login');
                 }
@@ -49,6 +52,10 @@ export default function Landing() {
               className="backdrop-blur-sm"
               onClick={() => {
                 // Force full page navigation to bypass client router
+                if (DEMO_MODE) {
+                  window.location.assign("/");
+                  return;
+                }
                 if (!DEV_MODE) {
                   window.location.assign('/api/login');
                 }
@@ -63,9 +70,9 @@ export default function Landing() {
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Card className="bg-brand-bg-dark/90 backdrop-blur-sm border border-border/30 shadow-xl animate-fade-in">
             <CardHeader className="pb-3">
-              <Calculator className="h-7 w-7 mb-1" style={{ color: 'hsl(200 100% 80%)' }} />
-              <CardTitle className="text-base" style={{ color: 'hsl(210 40% 98%)' }}>183-Day Rule Protection</CardTitle>
-              <CardDescription className="text-sm" style={{ color: 'hsl(213 27% 84%)' }}>
+              <Calculator className="h-7 w-7 mb-1 landing-feature-icon" />
+              <CardTitle className="text-base landing-feature-title">183-Day Rule Protection</CardTitle>
+              <CardDescription className="text-sm landing-feature-desc">
                 Advanced monitoring for NY, CA, and other high-tax states with real-time alerts
               </CardDescription>
             </CardHeader>
@@ -73,9 +80,9 @@ export default function Landing() {
 
           <Card className="bg-brand-bg-dark/90 backdrop-blur-sm border border-border/30 shadow-xl animate-fade-in">
             <CardHeader className="pb-3">
-              <Smartphone className="h-7 w-7 mb-1" style={{ color: 'hsl(200 100% 80%)' }} />
-              <CardTitle className="text-base" style={{ color: 'hsl(210 40% 98%)' }}>Auto Location Tracking</CardTitle>
-              <CardDescription className="text-sm" style={{ color: 'hsl(213 27% 84%)' }}>
+              <Smartphone className="h-7 w-7 mb-1 landing-feature-icon" />
+              <CardTitle className="text-base landing-feature-title">Auto Location Tracking</CardTitle>
+              <CardDescription className="text-sm landing-feature-desc">
                 GPS-based automatic day logging creates an unbreakable audit trail
               </CardDescription>
             </CardHeader>
@@ -83,9 +90,9 @@ export default function Landing() {
 
           <Card className="bg-brand-bg-dark/90 backdrop-blur-sm border border-border/30 shadow-xl animate-fade-in">
             <CardHeader className="pb-3">
-              <Shield className="h-7 w-7 mb-1" style={{ color: 'hsl(200 100% 80%)' }} />
-              <CardTitle className="text-base" style={{ color: 'hsl(210 40% 98%)' }}>Audit Defense Suite</CardTitle>
-              <CardDescription className="text-sm" style={{ color: 'hsl(213 27% 84%)' }}>
+              <Shield className="h-7 w-7 mb-1 landing-feature-icon" />
+              <CardTitle className="text-base landing-feature-title">Audit Defense Suite</CardTitle>
+              <CardDescription className="text-sm landing-feature-desc">
                 Professional documentation, CPA-ready reports, and legal compliance
               </CardDescription>
             </CardHeader>
@@ -93,9 +100,9 @@ export default function Landing() {
 
           <Card className="bg-brand-bg-dark/90 backdrop-blur-sm border border-border/30 shadow-xl animate-fade-in">
             <CardHeader className="pb-3">
-              <Building2 className="h-7 w-7 mb-1" style={{ color: 'hsl(200 100% 80%)' }} />
-              <CardTitle className="text-base" style={{ color: 'hsl(210 40% 98%)' }}>Property & Asset Tracking</CardTitle>
-              <CardDescription className="text-sm" style={{ color: 'hsl(213 27% 84%)' }}>
+              <Building2 className="h-7 w-7 mb-1 landing-feature-icon" />
+              <CardTitle className="text-base landing-feature-title">Property & Asset Tracking</CardTitle>
+              <CardDescription className="text-sm landing-feature-desc">
                 Monitor multiple residences and ties that affect tax residency status
               </CardDescription>
             </CardHeader>
@@ -103,9 +110,9 @@ export default function Landing() {
 
           <Card className="bg-brand-bg-dark/90 backdrop-blur-sm border border-border/30 shadow-xl animate-fade-in">
             <CardHeader className="pb-3">
-              <Users className="h-7 w-7 mb-1" style={{ color: 'hsl(200 100% 80%)' }} />
-              <CardTitle className="text-base" style={{ color: 'hsl(210 40% 98%)' }}>Premium Concierge</CardTitle>
-              <CardDescription className="text-sm" style={{ color: 'hsl(213 27% 84%)' }}>
+              <Users className="h-7 w-7 mb-1 landing-feature-icon" />
+              <CardTitle className="text-base landing-feature-title">Premium Concierge</CardTitle>
+              <CardDescription className="text-sm landing-feature-desc">
                 White-glove service with tax professionals and compliance consulting
               </CardDescription>
             </CardHeader>
@@ -113,9 +120,9 @@ export default function Landing() {
 
           <Card className="bg-brand-bg-dark/90 backdrop-blur-sm border border-border/30 shadow-xl animate-fade-in">
             <CardHeader className="pb-3">
-              <BarChart3 className="h-7 w-7 mb-1" style={{ color: 'hsl(200 100% 80%)' }} />
-              <CardTitle className="text-base" style={{ color: 'hsl(210 40% 98%)' }}>Tax Optimization AI</CardTitle>
-              <CardDescription className="text-sm" style={{ color: 'hsl(213 27% 84%)' }}>
+              <BarChart3 className="h-7 w-7 mb-1 landing-feature-icon" />
+              <CardTitle className="text-base landing-feature-title">Tax Optimization AI</CardTitle>
+              <CardDescription className="text-sm landing-feature-desc">
                 AI-powered strategies to maximize savings while maintaining compliance
               </CardDescription>
             </CardHeader>

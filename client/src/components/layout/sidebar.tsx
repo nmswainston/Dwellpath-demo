@@ -27,6 +27,21 @@ import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { DwellpathLogo } from "@/components/branding/dwellpath-logo";
 
+const HEART_RAIN_LAYOUT: Array<{ left: string; delay: string; size: string }> = [
+  { left: "left-[10%]", delay: "", size: "h-3 w-3" },
+  { left: "left-[18%]", delay: "anim-delay-100", size: "h-4 w-4" },
+  { left: "left-[26%]", delay: "anim-delay-200", size: "h-3 w-3" },
+  { left: "left-[34%]", delay: "anim-delay-300", size: "h-5 w-5" },
+  { left: "left-[42%]", delay: "anim-delay-400", size: "h-4 w-4" },
+  { left: "left-[50%]", delay: "anim-delay-100", size: "h-3 w-3" },
+  { left: "left-[58%]", delay: "anim-delay-200", size: "h-4 w-4" },
+  { left: "left-[66%]", delay: "anim-delay-300", size: "h-3 w-3" },
+  { left: "left-[74%]", delay: "anim-delay-400", size: "h-5 w-5" },
+  { left: "left-[82%]", delay: "anim-delay-100", size: "h-4 w-4" },
+  { left: "left-[90%]", delay: "anim-delay-200", size: "h-3 w-3" },
+  { left: "left-[14%]", delay: "anim-delay-300", size: "h-4 w-4" },
+];
+
 const navigationItems = [
   {
     name: "Dashboard",
@@ -488,14 +503,11 @@ export default function Sidebar() {
                   i % 4 === 0 && "text-pink-400 animation-delay-100",
                   i % 4 === 1 && "text-red-500 animation-delay-200", 
                   i % 4 === 2 && "text-rose-400 animation-delay-300",
-                  i % 4 === 3 && "text-pink-500 animation-delay-400"
+                  i % 4 === 3 && "text-pink-500 animation-delay-400",
+                  HEART_RAIN_LAYOUT[i]?.left,
+                  HEART_RAIN_LAYOUT[i]?.delay,
+                  HEART_RAIN_LAYOUT[i]?.size
                 )}
-                style={{
-                  left: `${(i * 8 + 10) % 90}%`,
-                  animationDelay: `${i * 0.2}s`,
-                  width: `${12 + (i % 3) * 4}px`,
-                  height: `${12 + (i % 3) * 4}px`,
-                }}
               />
             ))}
           </div>

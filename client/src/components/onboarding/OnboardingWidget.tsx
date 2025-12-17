@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { 
   Sparkles, 
@@ -115,12 +116,7 @@ export function OnboardingWidget() {
                     <span>Progress</span>
                     <span>{completedSteps} of {totalSteps} steps</span>
                   </div>
-                  <div className="w-full bg-blue-800 rounded-full h-2">
-                    <div 
-                      className="bg-white rounded-full h-2 transition-all duration-300"
-                      style={{ width: `${progress}%` }}
-                    ></div>
-                  </div>
+                  <Progress value={progress} className="h-2 bg-blue-800" />
                 </div>
               )}
             </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
+import { onboardingApi } from '@/lib/apiClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -72,18 +72,15 @@ export function OnboardingTour({ isOpen, onClose, userProfile }: OnboardingTourP
   });
 
   const { data: steps } = useQuery({
-    queryKey: ['/api/onboarding/tour', tourData?.id, 'steps'],
+    queryKey: ['/api/onboarding/tour/steps', tourData?.id],
     enabled: !!tourData?.id,
+    queryFn: () => onboardingApi.getSteps(tourData!.id),
   });
 
   // Start new tour mutation
   const startTourMutation = useMutation({
     mutationFn: async (profile: any) => {
-      const response = await apiRequest('/api/onboarding/tour/start', {
-        method: 'POST',
-        body: { userProfile: profile, tourType: 'initial' },
-      });
-      return response;
+      return onboardingApi.startTour(profile, "initial");
     },
     onSuccess: (data: any) => {
       setTourData(data.tour);
@@ -102,10 +99,7 @@ export function OnboardingTour({ isOpen, onClose, userProfile }: OnboardingTourP
   // Complete step mutation
   const completeStepMutation = useMutation({
     mutationFn: async (stepId: string) => {
-      const response = await apiRequest(`/api/onboarding/step/${stepId}/complete`, {
-        method: 'POST',
-      });
-      return response;
+      return onboardingApi.completeStep(stepId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/onboarding/tour'] });
@@ -164,7 +158,7 @@ export function OnboardingTour({ isOpen, onClose, userProfile }: OnboardingTourP
     const glowClasses = "absolute inset-0 rounded-full shadow-[0_0_6px_rgba(245,243,231,0.12)] dark:shadow-[0_0_10px_rgba(245,243,231,0.18)]";
     
     const IconWrapper = ({ children }: { children: ReactNode }) => (
-      <div className={containerClasses} style={{ width: '48px', height: '48px', padding: '6px' }}>
+      <div className={cn(containerClasses, "onboarding-icon-wrap")}>
         <div className={backgroundClasses} />
         <div className={glowClasses} />
         <div className="relative z-10 flex items-center justify-center">
@@ -425,15 +419,13 @@ export function OnboardingTour({ isOpen, onClose, userProfile }: OnboardingTourP
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
-        style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 overlay-backdrop"
       >
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden border"
-          style={{ backgroundColor: '#1A1F1C', borderColor: '#0B1D3A' }}
+          className="rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden border bg-card border-border"
         >
           {/* Step Indicator - Top of Modal */}
           <div className="px-4 pt-4 pb-0 mb-2">

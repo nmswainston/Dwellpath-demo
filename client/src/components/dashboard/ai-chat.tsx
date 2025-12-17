@@ -159,8 +159,8 @@ export default function AIChat() {
                 <div className="bg-muted rounded-lg px-3 py-2">
                   <div className="flex space-x-1">
                     <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce anim-delay-100"></div>
+                    <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce anim-delay-200"></div>
                   </div>
                 </div>
                 <p className="text-xs text-brand-text-light/60 dark:text-brand-text-dark/60 mt-1">AI is thinking...</p>

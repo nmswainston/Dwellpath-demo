@@ -505,7 +505,7 @@ export function UserProfileSetup({ onComplete, onBack }: UserProfileSetupProps) 
   const progressPercentage = ((currentStep + 1) / totalSteps) * 100;
 
   return (
-    <Card className="max-w-2xl mx-auto border" style={{ backgroundColor: '#1A1F1C', borderColor: '#0B1D3A' }}>
+    <Card className="max-w-2xl mx-auto border border-border bg-card">
       {/* Step Indicator - Top of Modal */}
       <div className="px-6 pt-6 pb-0 mb-2">
         <span className="text-sm font-semibold text-[#F5F3E7]/50 font-body tracking-wide">
