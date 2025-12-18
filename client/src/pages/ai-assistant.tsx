@@ -4,8 +4,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { aiApi } from "@/lib/apiClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import { handleUnauthorized } from "@/utils/handleUnauthorized";
-import AppLayout from "@/components/layout/app-layout";
+import { handleUnauthorized } from "@/lib/handleUnauthorized";
+import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,12 +13,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Bot, Send, Mic, User, Download, FileText, Calculator } from "lucide-react";
 import { format } from "date-fns";
-import { StaggeredPageContent } from "@/components/layout/page-transition";
+import { StaggeredPageContent } from "@/components/layout/PageTransition";
+import type { AiChat } from "@shared/schema";
 
 interface ChatMessage {
   userMessage: string;
   aiResponse: string;
   timestamp: string;
+}
+
+function toIsoString(value: unknown): string {
+  if (value instanceof Date) return value.toISOString();
+  if (typeof value === "string") return value;
+  if (typeof value === "number") return new Date(value).toISOString();
+  return new Date().toISOString();
 }
 
 const QUICK_QUERIES = [
@@ -59,6 +67,7 @@ export default function AIAssistant() {
   const { isAuthenticated, isLoading } = useAuth();
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Redirect to home if not authenticated
@@ -69,9 +78,9 @@ export default function AIAssistant() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
-  const { data: recentChats = [] } = useQuery({
+  const { data: recentChats = [] } = useQuery<AiChat[]>({
     queryKey: ["/api/ai/chats"],
-    select: (data) => data?.slice(0, 10) || [],
+    select: (data) => data.slice(0, 10),
     enabled: !!isAuthenticated,
   });
 
@@ -80,7 +89,14 @@ export default function AIAssistant() {
       return await aiApi.chat(userMessage);
     },
     onSuccess: (data) => {
-      setChatHistory(prev => [data, ...prev]);
+      setChatHistory((prev) => [
+        {
+          userMessage: data.userMessage,
+          aiResponse: data.aiResponse,
+          timestamp: toIsoString(data.timestamp),
+        },
+        ...prev,
+      ]);
       setMessage("");
       scrollToBottom();
     },
@@ -123,13 +139,17 @@ export default function AIAssistant() {
     },
   });
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+    // Only scroll the messages list itself (avoid scrolling the whole page container).
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior });
+      return;
+    }
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [chatHistory]);
+    // Fallback if the container ref isn't available for some reason.
+    messagesEndRef.current?.scrollIntoView({ behavior });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,8 +162,14 @@ export default function AIAssistant() {
     chatMutation.mutate(query);
   };
 
-  const allMessages = [...chatHistory, ...recentChats].sort(
-    (a, b) => new Date(b.timestamp || b.createdAt).getTime() - new Date(a.timestamp || a.createdAt).getTime()
+  const normalizedRecentChats: ChatMessage[] = recentChats.map((chat) => ({
+    userMessage: chat.userMessage,
+    aiResponse: chat.aiResponse,
+    timestamp: toIsoString(chat.createdAt),
+  }));
+
+  const allMessages: ChatMessage[] = [...chatHistory, ...normalizedRecentChats].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
 
   if (isLoading || !isAuthenticated) {
@@ -166,15 +192,16 @@ export default function AIAssistant() {
         <main className="flex-1 overflow-hidden">
           <StaggeredPageContent>
             {/* Quick Query Templates */}
-            <Card className="mb-8">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 font-heading text-brand-primary dark:text-foreground">
-                  <Bot className="h-5 w-5 text-brand-primary dark:text-accent" />
-                  Quick Query Templates
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <div className="card-grid card-grid-3 gap-4">
+            <section className="space-y-6">
+              <Card>
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-2 font-heading text-brand-primary dark:text-foreground">
+                    <Bot className="h-5 w-5 text-brand-primary dark:text-accent" />
+                    Quick Query Templates
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {QUICK_QUERIES.map((query, index) => {
                     const Icon = query.icon;
                     return (
@@ -195,52 +222,57 @@ export default function AIAssistant() {
                       </Button>
                     );
                   })}
-                </div>
-              </CardContent>
-            </Card>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
 
-            <div className="card-grid card-grid-2 lg:grid-cols-3 gap-8 h-full">
+            <section className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
               {/* Main Chat Area */}
             <div className="lg:col-span-2 flex flex-col">
               <Card className="flex-1 flex flex-col">
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center space-x-2 text-foreground">
+                    <CardTitle className="flex items-center space-x-2 text-foreground min-w-0 flex-1">
                       <Bot className="h-5 w-5 text-brand-primary dark:text-accent" />
                       <span>Dwellpath AI Assistant</span>
                     </CardTitle>
                     <div className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
-                      <span className="text-xs text-gray-500">Online</span>
+                      <span className="text-xs text-muted-foreground">Online</span>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col pt-4">
                   {/* Chat Messages */}
-                  <div className="flex-1 overflow-y-auto space-y-6 mb-6 border border-border rounded-xl p-6 bg-card shadow-sm">
+                  <div
+                    ref={messagesContainerRef}
+                    className="flex-1 overflow-y-auto space-y-6 mb-6 border border-border rounded-xl p-6 bg-card shadow-sm"
+                  >
                     {allMessages.length === 0 ? (
                       <div className="flex items-start space-x-3">
                         <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                          <Bot className="h-4 w-4 text-white" />
+                          <Bot className="h-4 w-4 text-primary-foreground" />
                         </div>
                         <div className="flex-1">
-                          <div className="bg-gray-100 rounded-lg px-4 py-3">
-                            <p className="text-sm text-gray-800">
+                          <div className="bg-muted rounded-lg px-4 py-3">
+                            <p className="text-sm text-foreground">
                               Hello! I'm your Dwellpath AI assistant, specialized in precision residency tracking and compliance. 
                               I can help you with:
                             </p>
-                            <ul className="text-sm text-gray-800 mt-2 space-y-1">
+                            <ul className="text-sm text-foreground mt-2 space-y-1">
                               <li>• Analyzing your residency status and 183-day compliance</li>
                               <li>• Summarizing expenses by state for audit purposes</li>
                               <li>• Drafting non-residency letters and legal documents</li>
                               <li>• Planning future travel to optimize tax savings</li>
                               <li>• Preparing documentation for potential audits</li>
                             </ul>
-                            <p className="text-sm text-gray-800 mt-2">
+                            <p className="text-sm text-foreground mt-2">
                               What would you like to know about your residency status?
                             </p>
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">Just now</p>
+                          <p className="text-xs text-muted-foreground mt-1">Just now</p>
                         </div>
                       </div>
                     ) : (
@@ -249,30 +281,30 @@ export default function AIAssistant() {
                           {/* User Message */}
                           <div className="flex items-start space-x-3 justify-end">
                             <div className="flex-1 text-right">
-                              <div className="bg-primary text-white rounded-lg px-4 py-3 inline-block max-w-2xl">
+                              <div className="bg-primary text-primary-foreground rounded-lg px-4 py-3 inline-block max-w-2xl">
                                 <p className="text-sm whitespace-pre-wrap">{chat.userMessage}</p>
                               </div>
-                              <p className="text-xs text-gray-500 mt-1">
+                              <p className="text-xs text-muted-foreground mt-1">
                                 {format(new Date(chat.timestamp || chat.createdAt), "MMM dd, h:mm a")}
                               </p>
                             </div>
-                            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                              <User className="h-4 w-4 text-gray-600" />
+                            <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                              <User className="h-4 w-4 text-muted-foreground" />
                             </div>
                           </div>
 
                           {/* AI Response */}
                           <div className="flex items-start space-x-3">
                             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                              <Bot className="h-4 w-4 text-white" />
+                              <Bot className="h-4 w-4 text-primary-foreground" />
                             </div>
                             <div className="flex-1">
-                              <div className="bg-gray-100 rounded-lg px-4 py-3">
-                                <p className="text-sm text-gray-800 whitespace-pre-wrap">
+                              <div className="bg-muted rounded-lg px-4 py-3">
+                                <p className="text-sm text-foreground whitespace-pre-wrap">
                                   {chat.aiResponse}
                                 </p>
                               </div>
-                              <p className="text-xs text-gray-500 mt-1">
+                              <p className="text-xs text-muted-foreground mt-1">
                                 {format(new Date(chat.timestamp || chat.createdAt), "MMM dd, h:mm a")}
                               </p>
                             </div>
@@ -285,17 +317,17 @@ export default function AIAssistant() {
                     {(chatMutation.isPending || complianceSummaryMutation.isPending) && (
                       <div className="flex items-start space-x-3">
                         <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                          <Bot className="h-4 w-4 text-white" />
+                          <Bot className="h-4 w-4 text-primary-foreground" />
                         </div>
                         <div className="flex-1">
-                          <div className="bg-gray-100 rounded-lg px-4 py-3">
+                          <div className="bg-muted rounded-lg px-4 py-3">
                             <div className="flex space-x-1">
-                              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce anim-delay-100"></div>
-                              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce anim-delay-200"></div>
+                              <div className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-bounce"></div>
+                              <div className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-bounce anim-delay-100"></div>
+                              <div className="w-2 h-2 bg-muted-foreground/40 rounded-full animate-bounce anim-delay-200"></div>
                             </div>
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">AI is analyzing your data...</p>
+                          <p className="text-xs text-muted-foreground mt-1">AI is analyzing your data...</p>
                         </div>
                       </div>
                     )}
@@ -401,7 +433,7 @@ export default function AIAssistant() {
                   <CardTitle className="text-lg">AI Capabilities</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3 text-sm text-gray-600">
+                  <div className="space-y-3 text-sm text-muted-foreground">
                     <div className="flex items-start space-x-2">
                       <Badge variant="secondary" className="mt-0.5">📊</Badge>
                       <p>Real-time analysis of your residency data and compliance status</p>
@@ -422,7 +454,8 @@ export default function AIAssistant() {
                 </CardContent>
               </Card>
             </div>
-            </div>
+              </div>
+            </section>
           </StaggeredPageContent>
         </main>
       </div>

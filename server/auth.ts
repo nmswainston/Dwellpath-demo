@@ -84,8 +84,13 @@ export async function setupAuth(app: Express) {
         console.error("❌ Error saving session:", err);
         return res.status(500).json({ message: "Failed to save session" });
       }
-      console.log("✅ Dev user authenticated, redirecting to /");
-      res.redirect("/");
+      const rawReturnTo = typeof req.query?.returnTo === "string" ? req.query.returnTo : undefined;
+      const returnTo =
+        rawReturnTo && rawReturnTo.startsWith("/") && !rawReturnTo.startsWith("//")
+          ? rawReturnTo
+          : "/dashboard";
+      console.log(`✅ Dev user authenticated, redirecting to ${returnTo}`);
+      res.redirect(returnTo);
     });
   });
   

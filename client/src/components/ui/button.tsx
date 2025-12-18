@@ -5,23 +5,24 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-serif font-medium ring-offset-background transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-body font-medium ring-offset-background transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-brand-primary text-brand-accent font-semibold rounded-full hover:bg-brand-primary/90",
+        default: "bg-primary text-primary-foreground font-semibold hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-brand-primary text-brand-text-dark dark:text-brand-accent bg-background hover:bg-brand-primary/10",
+          // Outline buttons are usually secondary actions; keep them neutral and composed.
+          "border border-border text-foreground bg-background hover:bg-[var(--interactive-hover-bg)] hover:border-[var(--interactive-hover-border)]",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        ghost: "hover:bg-[var(--interactive-hover-bg)] hover:text-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "h-10 px-6 py-2",
-        sm: "h-9 rounded-md px-4",
+        sm: "h-9 px-4",
         lg: "h-12 rounded-lg px-8 text-base font-semibold",
         icon: "h-10 w-10",
       },

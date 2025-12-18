@@ -32,7 +32,10 @@ const InputOTPSlot = React.forwardRef<
   React.ElementRef<"div">,
   React.ComponentPropsWithoutRef<"div"> & { index: number }
 >(({ index, className, ...props }, ref) => {
-  const inputOTPContext = React.useContext(OTPInputContext)
+  // `OTPInputContext` is typed as `unknown` in some setups; cast to the shape we need.
+  const inputOTPContext = React.useContext(OTPInputContext) as unknown as {
+    slots: Array<{ char: string | null; hasFakeCaret: boolean; isActive: boolean }>;
+  };
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index]
 
   return (

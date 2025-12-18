@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { handleUnauthorized } from "@/utils/handleUnauthorized";
-import AppLayout from "@/components/layout/app-layout";
-import StatsGrid from "@/components/dashboard/stats-grid";
-import ResidencyTracker from "@/components/dashboard/residency-tracker";
-import RecentActivity from "@/components/dashboard/recent-activity";
-import QuickStats from "@/components/dashboard/quick-stats";
-import NotificationsPanel from "@/components/dashboard/notifications-panel";
-import AIChat from "@/components/dashboard/ai-chat";
-import AlertBanner from "@/components/dashboard/alert-banner";
-import OnboardingModal from "@/components/onboarding/onboarding-modal";
-import { StaggeredPageContent } from "@/components/layout/page-transition";
+import { handleUnauthorized } from "@/lib/handleUnauthorized";
+import AppLayout from "@/components/layout/AppLayout";
+import StatsGrid from "@/features/dashboard/components/StatsGrid";
+import ResidencyTracker from "@/features/dashboard/components/ResidencyTracker";
+import RecentActivity from "@/features/dashboard/components/RecentActivity";
+import QuickStats from "@/features/dashboard/components/QuickStats";
+import NotificationsPanel from "@/features/dashboard/components/NotificationsPanel";
+import AIChat from "@/features/dashboard/components/AIChat";
+import AlertBanner from "@/features/dashboard/components/AlertBanner";
+import OnboardingModal from "@/features/onboarding/components/OnboardingModal";
+import { StaggeredPageContent } from "@/components/layout/PageTransition";
 
 export default function Dashboard() {
   const [showOnboarding, setShowOnboarding] = useState(true);
@@ -51,30 +51,38 @@ export default function Dashboard() {
           <AlertBanner />
           
           {/* Top Stats Overview */}
-          <div>
-            <div className="mb-6">
+          <section className="space-y-6">
+            <div className="space-y-2">
               <h2 className="font-heading text-2xl text-brand-primary dark:text-foreground">Overview</h2>
               <p className="font-body text-muted-foreground dark:text-muted-foreground">Your residency status at a glance</p>
             </div>
             <StatsGrid />
-          </div>
+          </section>
         
-          {/* Main Content - Four Window Layout */}
-          <div>
-            <div className="mb-6">
+          {/* Main Content - Two Column Layout */}
+          <section className="space-y-6">
+            <div className="space-y-2">
               <h2 className="font-heading text-2xl text-brand-primary dark:text-foreground">Dashboard</h2>
               <p className="font-body text-muted-foreground dark:text-muted-foreground">Track your residency, activity, and compliance status</p>
             </div>
-            <div className="card-grid card-grid-4 lg:grid-cols-2 xl:grid-cols-4">
-              <ResidencyTracker />
-              <RecentActivity />
-              <QuickStats />
-              <NotificationsPanel />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="flex flex-col gap-6">
+                <ResidencyTracker />
+                <RecentActivity />
+              </div>
+              {/* Right Column */}
+              <div className="flex flex-col gap-6">
+                <QuickStats />
+                <NotificationsPanel />
+              </div>
             </div>
-          </div>
+          </section>
           
           {/* AI Chat - Full Width Below */}
-          <AIChat />
+          <section>
+            <AIChat />
+          </section>
         </StaggeredPageContent>
       </AppLayout>
       

@@ -1,4 +1,4 @@
-import { usePreferences } from '@/hooks/usePreferences';
+import { usePreferences } from "@/features/preferences/hooks/usePreferences";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Settings, Palette, Bell, Globe, Calendar, DollarSign } from 'lucide-react';
-import AppLayout from '@/components/layout/app-layout';
+import AppLayout from "@/components/layout/AppLayout";
 
 export default function SettingsPage() {
   const { preferences, isLoading, updatePreferences } = usePreferences();
@@ -33,11 +33,11 @@ export default function SettingsPage() {
     return (
       <AppLayout title="Settings" subtitle="Customize your Dwellpath experience">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded w-48 mb-6"></div>
+          <div className="h-8 bg-muted rounded w-48 mb-6"></div>
           <div className="space-y-4">
-            <div className="h-32 bg-gray-300 dark:bg-gray-700 rounded"></div>
-            <div className="h-32 bg-gray-300 dark:bg-gray-700 rounded"></div>
-            <div className="h-32 bg-gray-300 dark:bg-gray-700 rounded"></div>
+            <div className="h-32 bg-muted rounded"></div>
+            <div className="h-32 bg-muted rounded"></div>
+            <div className="h-32 bg-muted rounded"></div>
           </div>
         </div>
       </AppLayout>
@@ -45,7 +45,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <AppLayout title="Settings" subtitle="Customize your Domicile experience">
+    <AppLayout title="Settings" subtitle="Customize your Dwellpath experience">
       <div className="grid gap-6 max-w-4xl">
         {/* Appearance Settings */}
         <Card>
@@ -62,7 +62,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="theme">Theme</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Choose your preferred color scheme
                 </p>
               </div>
@@ -70,7 +70,7 @@ export default function SettingsPage() {
                 value={preferences?.theme || 'system'}
                 onValueChange={(value) => handlePreferenceChange('theme', value)}
               >
-                <SelectTrigger className="w-32">
+                <SelectTrigger id="theme" name="theme" className="w-32">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -86,7 +86,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="compact-mode">Compact Mode</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Use smaller spacing and condensed layouts
                 </p>
               </div>
@@ -100,7 +100,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="sidebar-collapsed">Collapsed Sidebar</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Keep the sidebar collapsed by default
                 </p>
               </div>
@@ -117,7 +117,7 @@ export default function SettingsPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Bell className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <Bell className="h-5 w-5 text-brand-primary dark:text-accent" />
               <CardTitle>Notifications</CardTitle>
             </div>
             <CardDescription>
@@ -128,7 +128,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="notifications">Push Notifications</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Receive alerts for compliance risks and important updates
                 </p>
               </div>
@@ -145,7 +145,7 @@ export default function SettingsPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Globe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <Globe className="h-5 w-5 text-brand-primary dark:text-accent" />
               <CardTitle>Regional Settings</CardTitle>
             </div>
             <CardDescription>
@@ -156,7 +156,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="language">Language</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Choose your preferred language
                 </p>
               </div>
@@ -164,7 +164,7 @@ export default function SettingsPage() {
                 value={preferences?.language || 'en'}
                 onValueChange={(value) => handlePreferenceChange('language', value)}
               >
-                <SelectTrigger className="w-32">
+                <SelectTrigger id="language" name="language" className="w-32">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -180,7 +180,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="timezone">Timezone</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Your local timezone for date calculations
                 </p>
               </div>
@@ -188,7 +188,7 @@ export default function SettingsPage() {
                 value={preferences?.timezone || 'America/New_York'}
                 onValueChange={(value) => handlePreferenceChange('timezone', value)}
               >
-                <SelectTrigger className="w-48">
+                <SelectTrigger id="timezone" name="timezone" className="w-48">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -208,7 +208,7 @@ export default function SettingsPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <Calendar className="h-5 w-5 text-brand-primary dark:text-accent" />
               <CardTitle>Format Preferences</CardTitle>
             </div>
             <CardDescription>
@@ -219,7 +219,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="date-format">Date Format</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   How dates appear throughout the app
                 </p>
               </div>
@@ -227,7 +227,7 @@ export default function SettingsPage() {
                 value={preferences?.dateFormat || 'MM/dd/yyyy'}
                 onValueChange={(value) => handlePreferenceChange('dateFormat', value)}
               >
-                <SelectTrigger className="w-32">
+                <SelectTrigger id="date-format" name="date-format" className="w-32">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -243,7 +243,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="currency">Currency</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Default currency for expense tracking
                 </p>
               </div>
@@ -251,7 +251,7 @@ export default function SettingsPage() {
                 value={preferences?.currency || 'USD'}
                 onValueChange={(value) => handlePreferenceChange('currency', value)}
               >
-                <SelectTrigger className="w-24">
+                <SelectTrigger id="currency" name="currency" className="w-24">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

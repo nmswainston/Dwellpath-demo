@@ -1,15 +1,32 @@
 import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+const cardVariants = cva("rounded-xl border shadow-sm", {
+  variants: {
+    variant: {
+      default: "border-border bg-card text-card-foreground",
+      primary: "border-primary-foreground/20 bg-primary text-primary-foreground",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+})
+
+export interface CardProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof cardVariants> {}
+
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+  CardProps
+>(({ className, variant, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
-      "rounded-xl border border-border bg-card text-card-foreground shadow-sm",
+      cardVariants({ variant }),
       className
     )}
     {...props}
@@ -29,6 +46,47 @@ const CardHeader = React.forwardRef<
 ))
 CardHeader.displayName = "CardHeader"
 
+/**
+ * CardHeaderRow - Standardized header layout with left content and right actions/badges
+ * Uses CSS grid to prevent awkward wrapping. Left content can wrap naturally,
+ * right content stays fixed and never forces multi-line wraps.
+ */
+const CardHeaderRow = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("grid grid-cols-[1fr_auto] gap-3 items-start", className)}
+    {...props}
+  />
+))
+CardHeaderRow.displayName = "CardHeaderRow"
+
+const CardHeaderLeft = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("min-w-0 flex flex-col gap-1", className)}
+    {...props}
+  />
+))
+CardHeaderLeft.displayName = "CardHeaderLeft"
+
+const CardHeaderRight = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex items-center gap-2 shrink-0", className)}
+    {...props}
+  />
+))
+CardHeaderRight.displayName = "CardHeaderRight"
+
 const CardTitle = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -36,7 +94,7 @@ const CardTitle = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "text-2xl font-heading font-semibold leading-none tracking-tight",
+      "text-2xl font-heading font-semibold leading-tight tracking-tight wrap-break-word",
       className
     )}
     {...props}
@@ -50,7 +108,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm font-body text-muted-foreground", className)}
+    className={cn("text-sm font-body text-muted-foreground wrap-break-word", className)}
     {...props}
   />
 ))
@@ -76,4 +134,15 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+export { 
+  Card,
+  cardVariants,
+  CardHeader, 
+  CardHeaderRow,
+  CardHeaderLeft,
+  CardHeaderRight,
+  CardFooter, 
+  CardTitle, 
+  CardDescription, 
+  CardContent 
+}

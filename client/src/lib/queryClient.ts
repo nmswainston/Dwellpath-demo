@@ -1,8 +1,6 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 import * as apiClient from "./apiClient";
 
-const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
-
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
@@ -27,60 +25,59 @@ export async function apiRequest(
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
-export const getQueryFn: <T>(options: {
-  on401: UnauthorizedBehavior;
-}) => QueryFunction<T> =
-  ({ on401: unauthorizedBehavior }) =>
-  async ({ queryKey }) => {
+export const getQueryFn = <T>(options: { on401: UnauthorizedBehavior }): QueryFunction<T> => {
+  const unauthorizedBehavior = options.on401;
+
+  return async ({ queryKey }) => {
     // Handle API routes using the centralized API client
     const key = queryKey[0] as string;
     
     // Map query keys to API client methods
     if (key === "/api/auth/user") {
-      return apiClient.authApi.getUser() as Promise<T>;
+      return (await apiClient.authApi.getUser()) as T;
     }
     if (key === "/api/dashboard/stats") {
-      return apiClient.dashboardApi.getStats() as Promise<T>;
+      return (await apiClient.dashboardApi.getStats()) as T;
     }
     if (key === "/api/dashboard/residency-stats") {
       const year = (queryKey[1] as any)?.year;
-      return apiClient.dashboardApi.getResidencyStats(year) as Promise<T>;
+      return (await apiClient.dashboardApi.getResidencyStats(year)) as T;
     }
     if (key === "/api/residency-logs") {
       const year = (queryKey[1] as any)?.year;
-      return apiClient.residencyLogsApi.getAll(year) as Promise<T>;
+      return (await apiClient.residencyLogsApi.getAll(year)) as T;
     }
     if (key === "/api/expenses") {
       const params = queryKey[1] as any;
-      return apiClient.expensesApi.getAll(params?.state, params?.year) as Promise<T>;
+      return (await apiClient.expensesApi.getAll(params?.state, params?.year)) as T;
     }
     if (key === "/api/journal-entries") {
-      return apiClient.journalApi.getAll() as Promise<T>;
+      return (await apiClient.journalApi.getAll()) as T;
     }
     if (key === "/api/ai/chats") {
-      return apiClient.aiApi.getChats() as Promise<T>;
+      return (await apiClient.aiApi.getChats()) as T;
     }
     if (key === "/api/alerts") {
-      return apiClient.alertsApi.getAll() as Promise<T>;
+      return (await apiClient.alertsApi.getAll()) as T;
     }
     if (key === "/api/properties") {
-      return apiClient.propertiesApi.getAll() as Promise<T>;
+      return (await apiClient.propertiesApi.getAll()) as T;
     }
     if (key === "/api/audit-documents") {
-      return apiClient.auditDocumentsApi.getAll() as Promise<T>;
+      return (await apiClient.auditDocumentsApi.getAll()) as T;
     }
     if (key === "/api/user/preferences") {
-      return apiClient.preferencesApi.get() as Promise<T>;
+      return (await apiClient.preferencesApi.get()) as T;
     }
     if (key === "/api/onboarding/tour") {
-      return apiClient.onboardingApi.getTour() as Promise<T>;
+      return (await apiClient.onboardingApi.getTour()) as T;
     }
     if (key.startsWith("/api/onboarding/tour/") && key.includes("/steps")) {
       const tourId = queryKey[1] as string;
-      return apiClient.onboardingApi.getSteps(tourId) as Promise<T>;
+      return (await apiClient.onboardingApi.getSteps(tourId)) as T;
     }
     if (key === "/api/feedback") {
-      return apiClient.feedbackApi.getAll() as Promise<T>;
+      return (await apiClient.feedbackApi.getAll()) as T;
     }
 
     // Fallback to direct fetch for unmapped routes
@@ -96,6 +93,7 @@ export const getQueryFn: <T>(options: {
     await throwIfResNotOk(res);
     return await res.json();
   };
+};
 
 export const queryClient = new QueryClient({
   defaultOptions: {

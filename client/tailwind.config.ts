@@ -1,15 +1,19 @@
 import type { Config } from "tailwindcss";
 
-// Tailwind config for the client app. This mirrors the root-level config so that
-// utilities like `border-border` (used throughout the CSS) are recognized.
-const config: Config = {
-  darkMode: ["class"],
-  content: [
-    "./index.html",
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+/**
+ * Canonical Tailwind config for the project.
+ *
+ * Vite is configured with `root: client`, so Tailwind will naturally discover this file.
+ * Keeping a single config avoids “edited the wrong config” bugs.
+ */
+export default {
+  darkMode: "class",
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      spacing: {
+        xs: "0.25rem", // 4px
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -18,6 +22,19 @@ const config: Config = {
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        paper: "hsl(var(--paper))",
+        surface: "hsl(var(--surface-1))", // Alias for backward compatibility
+        "surface-1": "hsl(var(--surface-1))",
+        "surface-2": "hsl(var(--surface-2))",
+        "surface-3": "hsl(var(--surface-3))",
+        sand: {
+          DEFAULT: "hsl(var(--brand-sand))",
+          hover: "hsl(var(--brand-sand-hover))",
+          selected: "hsl(var(--brand-sand-selected))",
+          muted: "hsl(var(--brand-sand-muted))",
+          border: "hsl(var(--brand-sand-border))",
+          ring: "hsl(var(--brand-sand-ring))",
+        },
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
@@ -49,6 +66,12 @@ const config: Config = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        status: {
+          safe: "hsl(var(--status-safe))",
+          warning: "hsl(var(--status-warning))",
+          risk: "hsl(var(--status-risk))",
+          neutral: "hsl(var(--status-neutral))",
+        },
         chart: {
           "1": "hsl(var(--chart-1))",
           "2": "hsl(var(--chart-2))",
@@ -66,17 +89,26 @@ const config: Config = {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Dwellpath brand colors
+        // Dwellpath Brand Colors - Semantic
         brand: {
-          primary: "#202836",
-          accent: "#A8AFB9",
+          navy: "#0B1D3A",
+          cream: "#F5F3E7",
+          graphite: "#1A1F1C",
+          mutedBlue: "#C8D3E3",
+          ink: "#101418",
+          lightBg: "#F4EFE6",
+          // Legacy aliases for backward compatibility
+          primary: "#0B1D3A",
+          accent: "#F5F3E7",
           bg: {
-            dark: "#202836",
-            light: "#A8AFB9",
+            // Dark-mode anchor (midnight steel): #1A212D
+            dark: "#1A212D",
+            light: "#F4EFE6",
           },
           text: {
-            dark: "#A8AFB9",
-            light: "#202836",
+            // Dark-mode primary text (soft off-white): #F2F4F7
+            dark: "#F2F4F7",
+            light: "#0B1D3A",
           },
         },
       },
@@ -101,7 +133,5 @@ const config: Config = {
     },
   },
   plugins: [],
-};
-
-export default config;
+} satisfies Config;
 

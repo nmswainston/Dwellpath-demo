@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { auditDocumentsApi } from "@/lib/apiClient";
 import { FileText, Download, Trash2, FileCheck, FileBarChart, Calculator, AlertCircle, Calendar, Building2 } from "lucide-react";
 import type { AuditDocument } from "@shared/schema";
-import { StaggeredPageContent } from "@/components/layout/page-transition";
+import { StaggeredPageContent } from "@/components/layout/PageTransition";
 
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
@@ -28,7 +28,7 @@ const states = [
   { code: 'PA', name: 'Pennsylvania' },
 ];
 
-import AppLayout from "@/components/layout/app-layout";
+import AppLayout from "@/components/layout/AppLayout";
 
 export default function AuditPrep() {
   const [documentType, setDocumentType] = useState<string>('');
@@ -169,7 +169,7 @@ export default function AuditPrep() {
             <div className="space-y-2">
               <Label htmlFor="document-type">Document Type</Label>
               <Select value={documentType} onValueChange={setDocumentType}>
-                <SelectTrigger>
+                <SelectTrigger id="document-type" name="document-type">
                   <SelectValue placeholder="Select document type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -208,7 +208,7 @@ export default function AuditPrep() {
             <div className="space-y-2">
               <Label htmlFor="tax-year">Tax Year</Label>
               <Select value={taxYear.toString()} onValueChange={(value) => setTaxYear(parseInt(value))}>
-                <SelectTrigger>
+                <SelectTrigger id="tax-year" name="tax-year">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -226,7 +226,7 @@ export default function AuditPrep() {
               <div className="space-y-2">
                 <Label htmlFor="state">State</Label>
                 <Select value={state} onValueChange={setState}>
-                  <SelectTrigger>
+                  <SelectTrigger id="state" name="state">
                     <SelectValue placeholder="Select state" />
                   </SelectTrigger>
                   <SelectContent>
@@ -257,11 +257,11 @@ export default function AuditPrep() {
           </Button>
 
           {/* Information Alert */}
-          <div className="flex items-start space-x-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-            <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
+          <div className="flex items-start space-x-3 p-4 bg-[hsl(var(--status-neutral)/0.08)] border border-[hsl(var(--status-neutral)/0.20)] rounded-xl">
+            <AlertCircle className="h-5 w-5 text-status-neutral mt-0.5" />
             <div className="text-sm">
-              <p className="font-medium text-blue-900">Professional Documentation</p>
-              <p className="text-blue-700">
+              <p className="font-medium text-foreground">Professional Documentation</p>
+              <p className="text-muted-foreground">
                 Generated PDFs include detailed residency logs, expense summaries, risk assessments, 
                 and compliance analysis suitable for tax professionals and audit reviews.
               </p>
@@ -302,12 +302,12 @@ export default function AuditPrep() {
                 const IconComponent = getDocumentIcon(doc.documentType);
                 return (
                   <div key={doc.id} className="flex items-center justify-between p-4 border border-border rounded-xl bg-card shadow-sm">
-                    <div className="flex items-start space-x-4">
-                      <IconComponent className="h-8 w-8 text-blue-600" />
-                      <div>
-                        <h4 className="font-medium">{doc.title}</h4>
-                        <p className="text-sm text-muted-foreground">{doc.description}</p>
-                        <div className="flex items-center space-x-4 mt-2">
+                    <div className="flex items-start space-x-4 min-w-0 flex-1">
+                      <IconComponent className="h-8 w-8 text-muted-foreground flex-shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-medium break-words">{doc.title}</h4>
+                        <p className="text-sm text-muted-foreground break-words">{doc.description}</p>
+                        <div className="flex items-center space-x-4 mt-2 flex-wrap gap-2">
                           <Badge variant="secondary">
                             {getDocumentTypeLabel(doc.documentType)}
                           </Badge>

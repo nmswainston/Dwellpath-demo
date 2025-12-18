@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useId } from "react";
 import { Input } from "@/components/ui/input";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -20,6 +20,16 @@ interface AddressAutocompleteProps {
   onAddressSelect?: (address: AddressSuggestion) => void;
   placeholder?: string;
   className?: string;
+  /**
+   * Optional stable identifier for the underlying input.
+   * If omitted, a unique id is generated to satisfy browser autofill/a11y audits.
+   */
+  id?: string;
+  /**
+   * Optional name attribute for the underlying input (useful when the component
+   * is used inside a native <form> submit flow).
+   */
+  name?: string;
 }
 
 // Mock address suggestions for demo purposes
@@ -76,12 +86,17 @@ export function AddressAutocomplete({
   onChange,
   onAddressSelect,
   placeholder = "Enter address...",
-  className
+  className,
+  id,
+  name,
 }: AddressAutocompleteProps) {
   const [open, setOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const reactId = useId();
+  const inputId = id ?? `address-autocomplete-${reactId.replace(/:/g, "")}`;
+  const searchId = `${inputId}-search`;
 
   useEffect(() => {
     if (value.length >= 3) {
@@ -122,6 +137,8 @@ export function AddressAutocomplete({
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               ref={inputRef}
+              id={inputId}
+              name={name}
               type="text"
               placeholder={placeholder}
               value={value}
@@ -134,6 +151,7 @@ export function AddressAutocomplete({
         <PopoverContent className="w-[400px] p-0" align="start" side="bottom">
           <Command>
             <CommandInput 
+              id={searchId}
               placeholder="Search addresses..." 
               value={value}
               onValueChange={handleInputChange}

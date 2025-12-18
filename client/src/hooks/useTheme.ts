@@ -1,4 +1,4 @@
-import { usePreferences } from './usePreferences';
+import { usePreferences } from "@/features/preferences/hooks/usePreferences";
 import { useState, useEffect } from 'react';
 
 type Theme = 'light' | 'dark' | 'system';

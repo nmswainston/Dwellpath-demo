@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { DwellpathLogo } from "@/components/branding/dwellpath-logo";
+import { DwellpathLogo } from "@/components/branding/DwellpathLogo";
 import ElegantIconGrid from "@/components/icons/ElegantIconGrid";
 import { 
   Palette, 
@@ -92,8 +92,8 @@ export default function BrandStyle() {
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center space-y-2">
-                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-lg mx-auto flex items-center justify-center">
-                  <Lightbulb className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                <div className="w-16 h-16 bg-muted rounded-lg mx-auto flex items-center justify-center border border-border">
+                  <Lightbulb className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <h3 className="font-semibold">Trust & Security</h3>
                 <p className="text-sm text-muted-foreground">
@@ -110,8 +110,8 @@ export default function BrandStyle() {
                 </p>
               </div>
               <div className="text-center space-y-2">
-                <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-lg mx-auto flex items-center justify-center">
-                  <Layout className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+                <div className="w-16 h-16 bg-muted rounded-lg mx-auto flex items-center justify-center border border-border">
+                  <Layout className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <h3 className="font-semibold">Precision</h3>
                 <p className="text-sm text-muted-foreground">
@@ -136,46 +136,46 @@ export default function BrandStyle() {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               <ColorCard
-                name="Navy Blue"
-                lightValue="hsl(220 26% 14%)"
-                darkValue="hsl(220 13% 9%)"
-                description="Primary brand color"
-                className="bg-slate-900 dark:bg-slate-950"
+                name="Primary Navy"
+                lightValue="#0B1D3A"
+                darkValue="#0B1D3A"
+                description="Primary background, headers"
+                className="bg-brand-navy"
               />
               <ColorCard
-                name="Snow White"
-                lightValue="hsl(210 40% 98%)"
-                darkValue="hsl(220 13% 9%)"
-                description="Clean backgrounds"
-                className="bg-slate-50 dark:bg-slate-900 border"
+                name="Primary Cream"
+                lightValue="#F5F3E7"
+                darkValue="#F5F3E7"
+                description="Primary text, buttons"
+                className="bg-brand-cream border"
               />
               <ColorCard
-                name="Cool Gray"
-                lightValue="hsl(215 16% 47%)"
-                darkValue="hsl(215 20% 65%)"
-                description="Subtle text and borders"
-                className="bg-slate-500 dark:bg-slate-400"
+                name="Graphite Surface"
+                lightValue="#1A1F1C"
+                darkValue="#1A1F1C"
+                description="Cards, modals, panels"
+                className="bg-brand-graphite"
               />
               <ColorCard
-                name="Soft Blue"
-                lightValue="hsl(214 32% 91%)"
-                darkValue="hsl(214 20% 45%)"
-                description="Accent elements"
-                className="bg-blue-200 dark:bg-blue-700"
+                name="Muted Blue"
+                lightValue="#C8D3E3"
+                darkValue="#C8D3E3"
+                description="Borders, dividers"
+                className="bg-brand-mutedBlue border"
               />
               <ColorCard
-                name="Success Green"
-                lightValue="hsl(142 76% 36%)"
-                darkValue="hsl(142 76% 46%)"
-                description="Success states"
-                className="bg-brand-primary dark:bg-brand-primary"
+                name="Ink Text"
+                lightValue="#101418"
+                darkValue="#101418"
+                description="Light mode text"
+                className="bg-brand-ink"
               />
               <ColorCard
-                name="Warning Amber"
-                lightValue="hsl(43 74% 66%)"
-                darkValue="hsl(43 74% 56%)"
-                description="Alert states"
-                className="bg-amber-400 dark:bg-amber-500"
+                name="Light Background"
+                lightValue="#F4EFE6"
+                darkValue="#F4EFE6"
+                description="Light mode bg"
+                className="bg-brand-lightBg border"
               />
             </div>
           </CardContent>
@@ -284,8 +284,8 @@ export default function BrandStyle() {
                 <Badge variant="secondary">Secondary</Badge>
                 <Badge variant="outline">Outline</Badge>
                 <Badge variant="destructive">Destructive</Badge>
-                <Badge className="bg-brand-bg-light text-brand-text-light dark:bg-brand-bg-dark dark:text-brand-text-dark">Success</Badge>
-                <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300">Warning</Badge>
+                <Badge className="bg-accent text-accent-foreground">Success</Badge>
+                <Badge className="bg-[hsl(var(--status-warning)/0.10)] text-[hsl(var(--status-warning))] border border-[hsl(var(--status-warning)/0.20)]">Warning</Badge>
               </div>
             </div>
 
@@ -314,9 +314,9 @@ export default function BrandStyle() {
                     </p>
                   </CardContent>
                 </Card>
-                <Card className="border-blue-200 dark:border-blue-800">
+                <Card className="border-border">
                   <CardHeader>
-                    <CardTitle className="text-blue-900 dark:text-blue-100">Compliance Status</CardTitle>
+                    <CardTitle>Compliance Status</CardTitle>
                     <CardDescription>Tax Year 2024</CardDescription>
                   </CardHeader>
                   <CardContent>

@@ -4,8 +4,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { journalApi } from "@/lib/apiClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import { handleUnauthorized } from "@/utils/handleUnauthorized";
-import AppLayout from "@/components/layout/app-layout";
+import { handleUnauthorized } from "@/lib/handleUnauthorized";
+import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,8 @@ import { CalendarIcon, Plus, Edit, Trash2, Book, Search } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { JournalEntry } from "@shared/schema";
-import { StaggeredPageContent } from "@/components/layout/page-transition";
+import { StaggeredPageContent } from "@/components/layout/PageTransition";
+import { StateSelectItem } from "@/components/shared/StateSelectItem";
 
 const US_STATES = [
   { code: "AL", name: "Alabama" },
@@ -243,10 +244,10 @@ export default function Journal() {
 
   if (isLoading || !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -259,26 +260,28 @@ export default function Journal() {
     >
       <div className="page-container">
         <StaggeredPageContent>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Journal Entry Form */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Journal Entry Form */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Plus className="h-5 w-5 text-brand-primary dark:text-accent" />
-                  <span>{editingEntry ? "Edit" : "New"} Journal Entry</span>
+                <CardTitle className="flex items-center gap-2 min-w-0">
+                  <Plus className="h-5 w-5 text-brand-primary dark:text-accent flex-shrink-0" />
+                  <span className="break-words">{editingEntry ? "Edit" : "New"} Journal Entry</span>
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="break-words">
                   {editingEntry ? "Update your" : "Create a"} timestamped record for audit documentation
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="entryDate">Date *</Label>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
+                            id="entryDate"
+                            name="entryDate"
                             variant="outline"
                             className={cn(
                               "w-full justify-start text-left font-normal",
@@ -300,18 +303,21 @@ export default function Journal() {
                       </Popover>
                     </div>
 
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="state">State (Optional)</Label>
                       <Select value={selectedState} onValueChange={setSelectedState}>
-                        <SelectTrigger>
+                        <SelectTrigger id="state" name="state">
                           <SelectValue placeholder="Select a state" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="none">No specific state</SelectItem>
                           {US_STATES.map((state) => (
-                            <SelectItem key={state.code} value={state.code}>
-                              {state.name} ({state.code})
-                            </SelectItem>
+                            <StateSelectItem
+                              key={state.code}
+                              value={state.code}
+                              stateCode={state.code}
+                              label={state.name}
+                            />
                           ))}
                         </SelectContent>
                       </Select>
@@ -319,7 +325,7 @@ export default function Journal() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="title">Title *</Label>
                       <Input
                         id="title"
@@ -329,10 +335,10 @@ export default function Journal() {
                       />
                     </div>
 
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="category">Category *</Label>
                       <Select value={category} onValueChange={setCategory}>
-                        <SelectTrigger>
+                        <SelectTrigger id="category" name="category">
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
@@ -346,7 +352,7 @@ export default function Journal() {
                     </div>
                   </div>
 
-                  <div>
+                  <div className="space-y-2">
                     <Label htmlFor="content">Content *</Label>
                     <Textarea
                       id="content"
@@ -383,11 +389,11 @@ export default function Journal() {
             {/* Journal Entries List */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Book className="h-5 w-5 text-brand-primary dark:text-accent" />
-                  <span>Journal Entries</span>
+                <CardTitle className="flex items-center gap-2 min-w-0">
+                  <Book className="h-5 w-5 text-brand-primary dark:text-accent flex-shrink-0" />
+                  <span className="truncate">Journal Entries</span>
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="break-words">
                   Your recorded activities and notes
                 </CardDescription>
                 <div className="pt-2">
@@ -406,11 +412,11 @@ export default function Journal() {
                 {entriesLoading ? (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading entries...</p>
+                    <p className="text-muted-foreground">Loading entries...</p>
                   </div>
                 ) : filteredEntries.length === 0 ? (
                   <div className="text-center py-8">
-                    <p className="text-gray-600">
+                    <p className="text-muted-foreground">
                       {searchTerm 
                         ? "No entries found matching your search." 
                         : "No journal entries yet. Start documenting your activities!"
@@ -427,23 +433,28 @@ export default function Journal() {
                       return (
                         <div key={entry.id} className="border border-border rounded-xl p-4 bg-card shadow-sm">
                           <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2 mb-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center space-x-2 mb-2 min-w-0">
                                 {entry.state && (
-                                  <div className="w-6 h-6 bg-primary rounded flex items-center justify-center text-white text-xs font-bold">
-                                    {entry.state}
+                                  <div
+                                    className={cn(
+                                      "w-10 h-10 bg-brand-accent dark:bg-accent rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg flex-shrink-0",
+                                      "w-6 h-6 bg-primary rounded shadow-none shrink-0 text-primary-foreground/70 text-[10px] leading-none",
+                                    )}
+                                  >
+                                    {entry.state.toUpperCase()}
                                   </div>
                                 )}
-                                <h4 className="font-medium text-gray-900">{entry.title}</h4>
-                                <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
+                                <h4 className="font-medium text-foreground min-w-0 truncate">{entry.title}</h4>
+                                <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded-full flex-shrink-0">
                                   {entry.category}
                                 </span>
                               </div>
-                              <p className="text-sm text-gray-600 mb-2">
+                              <p className="text-sm text-muted-foreground mb-2">
                                 {format(parseISO(entry.entryDate), "MMM dd, yyyy")}
                                 {stateName && ` • ${stateName}`}
                               </p>
-                              <p className="text-sm text-gray-700 line-clamp-3">
+                              <p className="text-sm text-foreground line-clamp-3">
                                 {entry.content}
                               </p>
                             </div>

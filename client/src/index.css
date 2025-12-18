@@ -1,5 +1,40 @@
 @import "tailwindcss";
 
+/* Dark mode is driven by Tailwind's built-in `dark:` variant (configured as `darkMode: "class"`). */
+
+/* ============================================================================
+ * SURFACE HIERARCHY SYSTEM
+ * ============================================================================
+ * 
+ * This app uses a semantic surface hierarchy to create visual depth and
+ * separation between different UI layers. Each surface has a distinct role:
+ * 
+ * LIGHT MODE:
+ * - background: Lightest surface (#F4EFE6) - App/page background
+ * - surface-1: Header/section backgrounds (slightly lighter than bg)
+ * - surface-2 (card): Cards and panels (elevated from page)
+ * - surface-3 (popover): Modals, popovers, drawers (highest elevation)
+ * 
+ * DARK MODE (Brand-anchored “Midnight Steel”):
+ * - background (base): #1A212D - App/page background
+ * - surface-2 (cards/panels): #212A38 - Elevated surfaces
+ * - surface-3 (modals/popovers): #263142 - Secondary surfaces / highest elevation
+ * 
+ * ELEVATION:
+ * - Cards use subtle shadows in light mode for depth
+ * - Modals/popovers use stronger shadows to appear elevated
+ * - Dark mode relies on contrast rather than heavy shadows
+ * 
+ * BORDERS:
+ * - Borders are softened and act as secondary separators
+ * - Primary separation comes from surface color differences
+ * 
+ * USAGE:
+ * - Always use semantic tokens: bg-background, bg-card, bg-popover, text-foreground
+ * - Never use hardcoded colors: bg-slate-*, bg-zinc-*, bg-gray-*, bg-[#hex]
+ * - Dashboard tiles must use bg-card (same as Premium Plans cards)
+ * ============================================================================ */
+
 /* Brand Typography */
 .font-heading {
   font-family: 'Playfair Display', serif;
@@ -9,95 +44,251 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* Dwellpath Brand Variables */
+/* Dwellpath Brand Variables - Light Mode */
 :root {
   /* Light Mode - Dwellpath Palette */
-  /* Light mode: bg #A8AFB9 (off-white), text #202836 (blue-grey) */
-  --background: 215 15% 70%; /* #A8AFB9 - Light mode background (off-white) */
-  --foreground: 215 25% 20%; /* #202836 - Light mode text (blue-grey) */
-  --card: 215 15% 75%; /* Slightly lighter than background */
-  --card-foreground: 215 25% 20%;
-  --popover: 215 15% 75%;
-  --popover-foreground: 215 25% 20%;
-  --primary: 215 25% 20%; /* #202836 - brand-primary */
-  --primary-foreground: 215 15% 70%; /* #A8AFB9 - brand-accent */
-  --secondary: 215 15% 65%;
-  --secondary-foreground: 215 25% 20%;
-  --muted: 215 15% 60%;
-  --muted-foreground: 215 25% 30%;
-  --accent: 215 15% 70%; /* #A8AFB9 - brand-accent */
-  --accent-foreground: 215 25% 20%; /* #202836 - brand-primary */
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 215 15% 70%;
-  --border: 215 15% 55%;
-  --input: 215 15% 65%;
-  --ring: 215 15% 70%;
+  /* Background: #F4EFE6 (Light Background), Foreground: #101418 (Ink) or #0B1D3A (Navy) */
+  
+  /* Brand Sand Accent (Light Mode) - anchored to #DECDAF
+   * Use for: borders/dividers, subtle hovers/selected states, pills/badges, focus rings.
+   * Avoid for: body text, primary button fills, large “painted” surfaces.
+   */
+  --brand-sand: 38 42% 78%; /* #DECDAF */
+  --brand-sand-hover: 38 30% 92%; /* Light tint for hover + subtle pills */
+  --brand-sand-selected: 38 34% 88%; /* Slightly stronger than hover (persistent states) */
+  --brand-sand-muted: 38 16% 94%; /* Very subtle warm tint for muted surfaces */
+  --brand-sand-border: 38 22% 84%; /* Borders/dividers derived from sand */
+  --brand-sand-ring: 38 45% 62%; /* Focus ring derived from sand (visible, premium) */
+
+  /* Surface Hierarchy (Light Mode) - 4-Tier System:
+   * --background: Deepest - App/page background (low chroma warm, spacious)
+   * --surface-1: Header/section backgrounds (slightly lighter than bg)
+   * --surface-2: Cards/tiles (lighter than surface-1, elevated)
+   * --surface-3: Modals/popovers (lightest, highest elevation)
+   * 
+   * Design Principles:
+   * - Large surfaces use low chroma (5-8%) to feel spacious, not paint-like
+   * - Brand colors (navy/cream) reserved for accents, buttons, primary actions
+   * - Subtle elevation via lightness steps, not heavy borders
+   * - Each tier is visibly distinct but harmonious
+   */
+  --background: 38 6% 94%; /* Low chroma warm - App/page background (spacious, not “painted”) */
+  --foreground: 210 20% 8%; /* #101418 - Ink (primary text) */
+  --surface-1: 38 10% 96%; /* Header/section background (subtle sand lift; still low chroma) */
+  --surface: var(--surface-1); /* Alias for backward compatibility */
+  --surface-2: 38 8% 98%; /* Card/tile background (elevated, near-neutral) */
+  --surface-3: 38 6% 99%; /* Modal/popover background (highest elevation, brightest) */
+  --card: var(--surface-2); /* Alias for backward compatibility */
+  --card-foreground: 210 20% 8%; /* #101418 - Ink */
+  --popover: var(--surface-3); /* Alias for backward compatibility */
+  --popover-foreground: 210 20% 8%; /* #101418 - Ink */
+  --primary: 218 68% 14%; /* #0B1D3A - Navy (brand color, full chroma for accents) */
+  --primary-foreground: 51.4 41.2% 93.3%; /* #F5F3E7 - Cream */
+  --secondary: var(--brand-sand-hover); /* Sand-tinted secondary surfaces (pills, secondary buttons) */
+  --secondary-foreground: 218 68% 14%; /* #0B1D3A - Navy */
+  --muted: var(--brand-sand-muted); /* Muted surfaces (sand-derived, very subtle) */
+  --muted-foreground: 210 15% 45%; /* Muted text - one step down from foreground for better hierarchy */
+  --accent: var(--brand-sand-hover); /* Subtle hover/selection surface (sand-derived) */
+  --accent-foreground: 218 68% 14%; /* #0B1D3A - Navy */
+  --destructive: 0 70% 50%; /* Calm red, not alarm red */
+  --destructive-foreground: 50 47% 93%; /* #F5F3E7 - Cream */
+  --border: var(--brand-sand-border); /* Sand-derived borders/dividers */
+  --input: var(--surface-2); /* Input background (matches cards) */
+  --ring: var(--brand-sand-ring); /* Sand-derived focus rings */
+
+  /* Semantic aliases (requested) */
+  --paper: var(--background);
+  --surface-card: var(--card);
+  --surface-muted: var(--muted);
+
+  /* Interactive state tokens (hover vs selected/active)
+   * Rules:
+   * - Hover: temporary/exploratory (lower contrast)
+   * - Selected/Active: committed/persistent (higher contrast)
+   * - Selected must NOT be only an opacity step from Hover
+   * Note: tokens are full CSS colors (not reused surfaces like --muted/--accent).
+   */
+  --interactive-hover-bg: hsl(var(--brand-sand-hover));
+  --interactive-hover-border: hsl(var(--brand-sand-border));
+  --interactive-hover-text: hsl(var(--foreground));
+
+  /* For “in-range / soft-selected” contexts (e.g. calendar ranges) */
+  --interactive-selected-soft-bg: hsl(var(--brand-sand-hover));
+
+  --interactive-selected-bg: hsl(var(--brand-sand-selected));
+  --interactive-selected-border: hsl(var(--brand-sand-ring));
+  --interactive-selected-text: hsl(var(--foreground));
+
   --radius: 0.75rem;
+
+  /* Layout tokens */
+  --sidebar-width: 16rem;
+  --sidebar-width-mobile: 18rem;
+  --sidebar-width-icon: 3rem;
+
+  /*
+   * App shell vertical rhythm
+   * Keep these in sync with the sidebar layout rows so main content can align
+   * to the same horizontal guides without hard-coded pixel offsets.
+   */
+  --app-shell-sidebar-header-h: 4rem; /* h-16 */
+  --app-shell-sidebar-alerts-h: 2.5rem; /* h-10 */
+  --app-shell-sidebar-footer-h: 3.5rem; /* h-14 */
+  
+  /* Status Colors - Subtle, desaturated, cool-toned for data indicators */
+  /* These colors are specifically for numeric values, status labels, progress indicators, and small accent dots/icons */
+  /* Never use for full card backgrounds or large containers */
+  --status-safe: 185 45% 48%; /* Cool teal - Safe/Success states (desaturated teal-cyan) */
+  --status-warning: 35 50% 52%; /* Muted amber - Warning/Attention (desaturated, slightly warm) */
+  --status-risk: 350 45% 55%; /* Cool rose/coral - Risk/High Attention (desaturated rose, leaning cool) */
+  --status-neutral: 215 20% 50%; /* Slate blue-gray - Informational (very desaturated blue-gray) */
 }
 
-/* Tailwind v4 theme tokens (enables utilities like text-foreground/bg-background/border-border) */
+/* Tailwind v4 theme tokens - Light Mode */
 @theme {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
-
+  --color-surface-1: hsl(var(--surface-1));
+  --color-surface-2: hsl(var(--surface-2));
+  --color-surface-3: hsl(var(--surface-3));
+  --color-surface: hsl(var(--surface-1)); /* Alias for backward compatibility */
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));
-
   --color-popover: hsl(var(--popover));
   --color-popover-foreground: hsl(var(--popover-foreground));
-
   --color-primary: hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
-
   --color-secondary: hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
-
   --color-muted: hsl(var(--muted));
   --color-muted-foreground: hsl(var(--muted-foreground));
-
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
-
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
-
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
-
-  /* Dwellpath semantic palette (used by classes like text-brand-primary) */
-  --color-brand-primary: #202836;
-  --color-brand-accent: #A8AFB9;
-  --color-brand-bg-dark: #202836;
-  --color-brand-bg-light: #A8AFB9;
-  --color-brand-text-dark: #A8AFB9;
-  --color-brand-text-light: #202836;
-
+  --color-paper: hsl(var(--paper));
+  --color-surface-card: hsl(var(--surface-card));
+  --color-surface-muted: hsl(var(--surface-muted));
+  --color-sand: hsl(var(--brand-sand));
+  --color-sand-hover: hsl(var(--brand-sand-hover));
+  --color-sand-border: hsl(var(--brand-sand-border));
+  --color-sand-ring: hsl(var(--brand-sand-ring));
+  /* Brand palette utilities (Tailwind v4 CSS-first theme tokens) */
+  --color-brand-navy: #0B1D3A;
+  --color-brand-cream: #F5F3E7;
   --radius: var(--radius);
+  --color-status-safe: hsl(var(--status-safe));
+  --color-status-warning: hsl(var(--status-warning));
+  --color-status-risk: hsl(var(--status-risk));
+  --color-status-neutral: hsl(var(--status-neutral));
 }
 
-/* Dark Mode - Dwellpath Palette */
-.dark {
-  /* Dark mode: bg #202836 (blue-grey), text #A8AFB9 (off-white) */
-  --background: 215 25% 20%; /* #202836 - Dark mode background (blue-grey) */
-  --foreground: 215 15% 70%; /* #A8AFB9 - Dark mode text (off-white) */
-  --card: 215 25% 18%; /* Slightly darker than background */
-  --card-foreground: 215 15% 70%;
-  --popover: 215 25% 18%;
-  --popover-foreground: 215 15% 70%;
-  --primary: 215 15% 70%;
-  --primary-foreground: 215 25% 20%;
-  --secondary: 215 25% 25%;
-  --secondary-foreground: 215 15% 70%;
-  --muted: 215 25% 30%;
-  --muted-foreground: 215 15% 60%;
-  --accent: 215 15% 70%; /* #A8AFB9 - brand-accent */
-  --accent-foreground: 215 25% 20%; /* brand-primary */
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 215 15% 70%;
-  --border: 215 25% 35%;
-  --input: 215 25% 22%;
-  --ring: 215 15% 70%;
+/* Dark Mode - Dwellpath “Midnight Steel” Palette (anchored to #1A212D) */
+:root.dark {
+  /* Core anchor + elevation stack (hex → HSL):
+   * - #1A212D (218 27% 14%) base background
+   * - #212A38 (217 26% 17%) elevated surfaces (cards/panels)
+   * - #263142 (216 27% 20%) secondary surfaces (nested/modals)
+   *
+   * Design rules:
+   * - No warm grays; no pure-white text; no pure-black borders.
+   * - Cards are always lighter than the app background.
+   * - Borders are “a whisper” (low-contrast separators).
+   */
+
+  /* Semantic “branding package” tokens (store as HSL triples for hsl(var(--x)) usage) */
+  --bg-midnight-steel: 218 27% 14%; /* #1A212D */
+  --surface-elevated: 217 26% 17%; /* #212A38 */
+  --surface-secondary: 216 27% 20%; /* #263142 */
+
+  --text-primary: 216 24% 96%; /* #F2F4F7 */
+  --text-secondary: 220 16% 82%; /* #C9CED8 */
+  --text-muted: 218 13% 65%; /* #9AA3B2 */
+  --text-disabled: 218 10% 48%; /* #6E7787 */
+
+  --border-subtle: 216 23% 24%; /* #2E394A */
+  --border-strong: 218 22% 29%; /* #3A465A (rare) */
+
+  /* Primary accent (used for primary actions/links in dark mode).
+   * Tone rule: keep hue, reduce saturation, avoid neon intensity.
+   */
+  --accent-primary: 211 58% 60%; /* Muted blue (was neon) */
+  --accent-primary-hover: 211 60% 64%; /* Subtle lift on hover */
+  --accent-primary-active: 211 56% 56%; /* Slightly deeper active */
+
+  /* Status tones (dark mode): restrained, desaturated, never neon. */
+  --status-success: 158 38% 52%;
+  --status-warning-brand: 38 55% 54%;
+  --status-error: 8 55% 56%;
+
+  /* Shadcn/Tailwind semantic tokens (wired into Tailwind config) */
+  --background: var(--bg-midnight-steel);
+  --foreground: var(--text-primary);
+
+  --surface-1: var(--surface-elevated);
+  --surface: var(--surface-1); /* Alias for backward compatibility */
+  --surface-2: var(--surface-elevated);
+  --surface-3: var(--surface-secondary);
+
+  --card: var(--surface-2);
+  --card-foreground: var(--text-primary);
+
+  --popover: var(--surface-3);
+  --popover-foreground: var(--text-primary);
+
+  /* Primary actions / links */
+  --primary: var(--accent-primary);
+  --primary-foreground: var(--bg-midnight-steel);
+  --ring: var(--accent-primary);
+
+  /* Neutral UI roles */
+  --secondary: var(--surface-elevated);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--surface-secondary);
+  --muted-foreground: var(--text-secondary);
+
+  /* “Accent” is used by shadcn as a subtle hover/selection background (NOT the primary blue) */
+  --accent: var(--border-subtle);
+  --accent-foreground: var(--text-primary);
+
+  --destructive: var(--status-error);
+  --destructive-foreground: var(--text-primary);
+
+  --border: var(--border-subtle);
+  --input: var(--surface-elevated);
+
+  /* Interactive state tokens (hover vs selected/active) */
+  --interactive-hover-bg: hsl(var(--border-subtle) / 0.55);
+  --interactive-hover-border: hsl(var(--border-strong) / 0.75);
+  --interactive-hover-text: hsl(var(--text-primary));
+
+  --interactive-selected-soft-bg: hsl(var(--surface-secondary) / 0.85);
+  --interactive-selected-bg: hsl(var(--border-strong) / 0.55);
+  --interactive-selected-border: hsl(var(--border-strong));
+  --interactive-selected-text: hsl(var(--text-primary));
+
+  /* Status colors (project semantic names) */
+  --status-safe: var(--status-success);
+  --status-warning: var(--status-warning-brand);
+  --status-risk: var(--status-error);
+  /* Info: neutral blue-gray (not the primary action blue) */
+  --status-neutral: 215 22% 62%;
+
+  /* Semantic aliases (kept for consistency; dark mode stays centered on #1A212D) */
+  --paper: var(--background);
+  --surface-card: var(--card);
+  --surface-muted: var(--muted);
+
+  /* Brand sand tokens (semantic fallbacks in dark mode; mapped to existing dark palette) */
+  --brand-sand: var(--border-strong);
+  --brand-sand-hover: var(--border-subtle);
+  --brand-sand-selected: var(--border-strong);
+  --brand-sand-muted: var(--surface-secondary);
+  --brand-sand-border: var(--border-subtle);
+  --brand-sand-ring: var(--ring);
 }
 
 @layer base {
@@ -127,7 +318,6 @@
   .font-heading,
   .page-title,
   .section-title,
-  [class*="CardTitle"],
   .card-title,
   [data-testid*="heading"],
   .heading,
@@ -141,7 +331,6 @@
   .page-subtitle,
   .section-subtitle,
   .form-label,
-  [class*="CardDescription"],
   .card-description,
   .description,
   .subtitle,
@@ -179,35 +368,28 @@
   }
 
   .btn-dwellpath:hover {
-    box-shadow: 0 0 0 3px hsl(var(--soft-blue) / 0.3);
+    box-shadow: 0 0 0 3px hsl(var(--ring) / 0.25);
   }
 
   .dark .btn-dwellpath:hover {
-    box-shadow: 0 0 0 3px hsl(214 100% 60% / 0.3);
+    box-shadow: 0 0 0 3px hsl(var(--ring) / 0.3);
   }
 
-  /* Card Enhancements */
-  .card-dwellpath {
-    @apply bg-card border rounded-xl shadow-sm;
-    border-color: hsl(var(--border));
-    box-shadow: 0 1px 3px 0 hsl(var(--slate-black) / 0.1), 0 1px 2px 0 hsl(var(--slate-black) / 0.06);
-  }
-
-  .dark .card-dwellpath {
-    background: hsl(215, 25%, 14%);
-    border: 1px solid hsl(215, 15%, 25%);
-    box-shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.4), 0 1px 2px 0 hsl(0 0% 0% / 0.3);
-  }
-
-  /* Solid Modal Backgrounds */
+  /* Solid Modal Backgrounds - Highest elevation */
   .modal-dwellpath {
-    background: hsl(var(--background));
+    background: hsl(var(--popover));
     border: 1px solid hsl(var(--border));
+    /* Elevated shadow for modals in light mode */
+    box-shadow: 0 4px 6px -1px hsl(var(--foreground) / 0.08), 0 2px 4px -1px hsl(var(--foreground) / 0.06);
+    /* Subtle highlight border for elevation */
+    border-top-color: hsl(var(--surface-3) / 0.4);
+    border-left-color: hsl(var(--surface-3) / 0.3);
   }
 
   .dark .modal-dwellpath {
-    background: hsl(215, 25%, 12%);
-    border: 1px solid hsl(215, 15%, 25%);
+    background: hsl(var(--popover));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.4), 0 1px 2px 0 hsl(0 0% 0% / 0.3);
   }
 
   /* Form Input Enhancements */
@@ -217,367 +399,210 @@
   }
 
   .input-dwellpath:focus {
-    @apply ring-2 ring-ring ring-offset-2;
+    /* Quiet focus: thin ring, minimal offset (keeps visibility without shouting). */
+    @apply ring-1 ring-ring ring-offset-1;
     border-color: hsl(var(--ring));
   }
 
-  /* Navigation Styling */
+  /* Navigation Styling - Uses surface-1 for subtle elevation */
   .nav-dwellpath {
-    background: hsl(var(--background)); /* Match page background */
+    background: hsl(var(--surface-1)); /* Slightly elevated from page background */
     border-right: 1px solid hsl(var(--border));
-    box-shadow: 1px 0 3px 0 hsl(var(--foreground) / 0.05);
+    /* Subtle sidebar shadow in light mode */
+    box-shadow: 1px 0 2px 0 hsl(var(--foreground) / 0.04);
+    /* Very subtle top highlight */
+    border-top-color: hsl(var(--surface-2) / 0.2);
   }
 
   .dark .nav-dwellpath {
-    background: hsl(var(--background)); /* Match page background */
+    background: hsl(var(--background)); /* Match page background - RESTORED */
     border-right: 1px solid hsl(var(--border));
-    box-shadow: 1px 0 3px 0 hsl(0 0% 0% / 0.3);
+    box-shadow: 1px 0 3px 0 hsl(0 0% 0% / 0.3); /* RESTORED */
   }
 
   /* Dropdown and Popover Solid Backgrounds */
-  .dropdown-content,
-  .popover-content,
-  .select-content,
-  .command-list,
-  .tooltip-content,
   [data-radix-popper-content-wrapper],
   [data-radix-select-content],
   [data-radix-dropdown-menu-content],
   [data-radix-popover-content],
   [data-radix-tooltip-content],
   [data-radix-command-list] {
-    background: hsl(var(--background)) !important;
+    background: hsl(var(--popover)) !important;
     border: 1px solid hsl(var(--border)) !important;
-    box-shadow: 0 4px 6px -1px hsl(var(--foreground) / 0.1), 0 2px 4px -1px hsl(var(--foreground) / 0.06) !important;
+    /* Elevated shadow for popovers in light mode */
+    box-shadow: 0 4px 6px -1px hsl(var(--foreground) / 0.08), 0 2px 4px -1px hsl(var(--foreground) / 0.06) !important;
   }
 
-  .dark .dropdown-content,
-  .dark .popover-content,
-  .dark .select-content,
-  .dark .command-list,
-  .dark .tooltip-content,
   .dark [data-radix-popper-content-wrapper],
   .dark [data-radix-select-content],
   .dark [data-radix-dropdown-menu-content],
   .dark [data-radix-popover-content],
   .dark [data-radix-tooltip-content],
   .dark [data-radix-command-list] {
-    background: hsl(215, 25%, 14%) !important;
-    border: 1px solid hsl(214 20% 40%) !important;
-    box-shadow: 0 4px 6px -1px hsl(0 0% 0% / 0.3), 0 2px 4px -1px hsl(0 0% 0% / 0.2) !important;
+    background: hsl(var(--popover)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    /* Dark mode popover shadow */
+    box-shadow: 0 4px 6px -1px hsl(0 0% 0% / 0.4), 0 2px 4px -1px hsl(0 0% 0% / 0.3) !important;
   }
 
   /* Menu Item Hover States */
-  .dropdown-item:hover,
-  .select-item:hover,
-  .command-item:hover,
-  [data-radix-dropdown-menu-item]:hover,
-  [data-radix-select-item]:hover,
+  [data-radix-dropdown-menu-item]:hover:not([data-state='checked']):not([aria-selected='true']),
+  [data-radix-select-item]:hover:not([data-state='checked']):not([aria-selected='true']),
   [data-radix-command-item]:hover {
-    background: hsl(var(--accent)) !important;
-    color: hsl(var(--accent-foreground)) !important;
+    background: var(--interactive-hover-bg) !important;
+    color: var(--interactive-hover-text) !important;
   }
 
-  .dark .dropdown-item:hover,
-  .dark .select-item:hover,
-  .dark .command-item:hover,
-  .dark [data-radix-dropdown-menu-item]:hover,
-  .dark [data-radix-select-item]:hover,
+  .dark [data-radix-dropdown-menu-item]:hover:not([data-state='checked']):not([aria-selected='true']),
+  .dark [data-radix-select-item]:hover:not([data-state='checked']):not([aria-selected='true']),
   .dark [data-radix-command-item]:hover {
-    background: hsl(214 25% 20%) !important;
-    color: hsl(213 27% 84%) !important;
+    background: var(--interactive-hover-bg) !important;
+    color: var(--interactive-hover-text) !important;
+  }
+
+  /* Menu Item Selected/Checked States (must not look like hover) */
+  [data-radix-dropdown-menu-item][data-state="checked"],
+  [data-radix-select-item][data-state="checked"] {
+    background: var(--interactive-selected-bg) !important;
+    color: var(--interactive-selected-text) !important;
+  }
+
+  [data-radix-dropdown-menu-item][data-state="checked"]:hover,
+  [data-radix-select-item][data-state="checked"]:hover {
+    background: var(--interactive-selected-bg) !important;
+    color: var(--interactive-selected-text) !important;
+  }
+
+  /* Command palette highlighted item (temporary/hover-like, NOT selected) */
+  [cmdk-item][data-selected="true"],
+  [data-radix-command-item][aria-selected="true"] {
+    background: var(--interactive-hover-bg) !important;
+    color: var(--interactive-hover-text) !important;
+  }
+
+  [cmdk-item][data-selected="true"]:hover,
+  [data-radix-command-item][aria-selected="true"]:hover {
+    background: var(--interactive-hover-bg) !important;
+    color: var(--interactive-hover-text) !important;
   }
 
   /* Form Select Elements */
   select,
-  .select-trigger,
   [data-radix-select-trigger] {
     background: hsl(var(--background)) !important;
     border: 1px solid hsl(var(--border)) !important;
   }
 
   .dark select,
-  .dark .select-trigger,
   .dark [data-radix-select-trigger] {
-    background: hsl(215, 25%, 14%) !important;
-    border: 1px solid hsl(214 20% 40%) !important;
-    color: hsl(213 27% 84%) !important;
+    background: hsl(var(--input)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    color: hsl(var(--foreground)) !important;
   }
 
-  /* Select Dropdown Text Color Fixes - More Specific */
-  .dark [data-radix-select-content] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-radix-select-item] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-radix-select-item] * {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-radix-select-value] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-radix-select-label] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  /* Force all select content to use light text */
-  .dark [data-radix-select-content] * {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-radix-select-viewport] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-radix-select-viewport] * {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  /* Ensure placeholder text is visible */
-  .dark [data-radix-select-trigger][data-placeholder] {
-    color: hsl(213 27% 70%) !important;
-  }
-
-  /* Command and Popover Content Text */
-  .dark [data-radix-command-list] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-radix-command-item] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-radix-popover-content] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-radix-dropdown-menu-content] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-radix-dropdown-menu-item] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  /* Additional Select component text fixes - Enhanced */
-  .dark .select-item {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark .select-label {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark .select-value {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  /* Force light text on all select-related elements */
-  .dark [class*="select"] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [role="option"] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [role="listbox"] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [role="combobox"] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  /* Ultimate fallback for any dropdown content */
-  .dark [data-state="open"] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-state="open"] * {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  /* Nuclear option - force all possible select elements */
-  .dark [data-radix-popper-content-wrapper] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-radix-popper-content-wrapper] * {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark div[role="listbox"] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark div[role="listbox"] * {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark div[role="option"] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark div[role="option"] * {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  /* Override any potential inheritance */
-  .dark [data-radix-select-portal] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark [data-radix-select-portal] * {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  /* Final emergency override - target by position */
-  .dark body [data-radix-select-content] {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  .dark body [data-radix-select-content] * {
-    color: hsl(213 27% 84%) !important;
-  }
-
-  /* Target by z-index level */
-  .dark [style*="z-index"] [data-radix-select-item] {
-    color: hsl(213 27% 84%) !important;
-  }
-
+  /* Select Dropdown Text Color Fixes - Using semantic tokens */
+  .dark [data-radix-select-content],
+  .dark [data-radix-select-item],
+  .dark [data-radix-select-item] *,
+  .dark [data-radix-select-value],
+  .dark [data-radix-select-label],
+  .dark [data-radix-select-content] *,
+  .dark [data-radix-select-viewport],
+  .dark [data-radix-select-viewport] *,
+  .dark [data-radix-select-trigger][data-placeholder],
+  .dark [data-radix-command-list],
+  .dark [data-radix-command-item],
+  .dark [data-radix-popover-content],
+  .dark [data-radix-dropdown-menu-content],
+  .dark [data-radix-dropdown-menu-item],
+  .dark [role="option"],
+  .dark [role="listbox"],
+  .dark [role="combobox"],
+  .dark [data-state="open"],
+  .dark [data-state="open"] *,
+  .dark [data-radix-popper-content-wrapper],
+  .dark [data-radix-popper-content-wrapper] *,
+  .dark div[role="listbox"],
+  .dark div[role="listbox"] *,
+  .dark div[role="option"],
+  .dark div[role="option"] *,
+  .dark [data-radix-select-portal],
+  .dark [data-radix-select-portal] *,
+  .dark body [data-radix-select-content],
+  .dark body [data-radix-select-content] *,
+  .dark [style*="z-index"] [data-radix-select-item],
   .dark [style*="z-index"] [data-radix-select-item] * {
-    color: hsl(213 27% 84%) !important;
+    color: hsl(var(--foreground)) !important;
   }
 
   /* Dialog/Modal Backgrounds */
   .dialog-content,
   [data-radix-dialog-content] {
-    background: hsl(var(--background)) !important;
+    background: hsl(var(--popover)) !important;
     border: 1px solid hsl(var(--border)) !important;
+    /* Elevated shadow for dialogs in light mode */
+    box-shadow: 0 10px 15px -3px hsl(var(--foreground) / 0.1), 0 4px 6px -2px hsl(var(--foreground) / 0.08) !important;
   }
 
   .dark .dialog-content,
   .dark [data-radix-dialog-content] {
-    background: hsl(215, 25%, 14%) !important;
-    border: 1px solid hsl(214 20% 40%) !important;
+    background: hsl(var(--popover)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    /* Dark mode dialog shadow */
+    box-shadow: 0 10px 15px -3px hsl(0 0% 0% / 0.5), 0 4px 6px -2px hsl(0 0% 0% / 0.4) !important;
   }
 
-  /* Dark Mode Border and Contrast Fixes */
+  /* Dark Mode Border and Contrast Fixes - Using theme tokens */
   .dark .border {
-    border-color: hsl(214 20% 40%);
+    border-color: hsl(var(--border)); /* Uses theme token */
   }
   
   /* No `border-border` utility in Tailwind v4; use variable-driven border colors directly. */
   
   .dark .border-slate-200 {
-    border-color: hsl(214 20% 40%);
+    border-color: hsl(var(--border)); /* Uses theme token */
   }
   
   .dark .border-slate-300 {
-    border-color: hsl(214 20% 45%);
+    border-color: hsl(var(--border)); /* Uses theme token */
   }
   
   .dark .border-gray-200 {
-    border-color: hsl(214 20% 40%);
+    border-color: hsl(var(--border)); /* Uses theme token */
   }
   
   .dark .border-gray-300 {
-    border-color: hsl(214 20% 45%);
+    border-color: hsl(var(--border)); /* Uses theme token */
   }
   
   .dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
-    border-color: hsl(214 20% 40%);
+    border-color: hsl(var(--border)); /* Uses theme token */
   }
   
   .dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
-    border-color: hsl(214 20% 40%);
+    border-color: hsl(var(--border)); /* Uses theme token */
   }
 
-  /* Table borders */
+  /* Table borders - Using theme tokens */
   .dark .border-collapse td,
   .dark .border-collapse th {
-    border-color: hsl(214 20% 40%);
+    border-color: hsl(var(--border)); /* Uses theme token */
   }
 
-  /* Card and component borders */
+  /* Card and component borders - Using theme tokens */
   .dark [class*="border"] {
-    border-color: hsl(214 20% 40%);
+    border-color: hsl(var(--border)); /* Uses theme token */
   }
 
-  /* Specific component overrides */
+  /* Specific component overrides - Removed hardcoded graphite, using theme tokens */
   .dark .bg-card {
-    background-color: hsl(214 25% 23%);
-    border-color: hsl(214 20% 40%);
+    background-color: hsl(var(--card)); /* Uses theme token */
+    border-color: hsl(var(--border)); /* Uses theme token */
   }
 
   .dark .bg-popover {
-    background-color: hsl(214 25% 20%);
-    border-color: hsl(214 20% 40%);
-  }
-
-  /* Text contrast fixes */
-  .dark .text-slate-600 {
-    color: hsl(214 32% 91%);
-  }
-  
-  .dark .text-slate-500 {
-    color: hsl(214 32% 91%);
-  }
-  
-  .dark .text-gray-600 {
-    color: hsl(214 32% 91%);
-  }
-  
-  .dark .text-gray-500 {
-    color: hsl(214 32% 91%);
-  }
-  
-  .dark .text-muted-foreground {
-    color: hsl(214 32% 91%);
-  }
-
-  .dark .text-slate-400 {
-    color: hsl(214 32% 91%);
-  }
-
-  .dark .text-gray-400 {
-    color: hsl(214 32% 91%);
-  }
-
-  /* Button and interactive element fixes */
-  .dark .bg-white {
-    background-color: hsl(214 25% 23%);
-    color: hsl(213 27% 84%);
-  }
-  
-  .dark .hover\:bg-gray-50:hover {
-    background-color: hsl(214 25% 26%);
-  }
-  
-  .dark .hover\:bg-slate-50:hover {
-    background-color: hsl(214 25% 26%);
-  }
-
-  .dark .bg-gray-50 {
-    background-color: hsl(214 25% 25%);
-  }
-
-  .dark .bg-slate-50 {
-    background-color: hsl(214 25% 25%);
-  }
-
-  .dark .bg-gray-100 {
-    background-color: hsl(214 25% 27%);
-  }
-
-  .dark .bg-slate-100 {
-    background-color: hsl(214 25% 27%);
+    background-color: hsl(var(--popover)); /* Uses theme token */
+    border-color: hsl(var(--border)); /* Uses theme token */
   }
 
   /* Enhanced card and component styling */
@@ -595,55 +620,83 @@
 
   /* Ring and focus states */
   .dark .ring-blue-500 {
-    --tw-ring-color: hsl(220 14% 96%);
+    --tw-ring-color: hsl(var(--ring));
   }
 
   .dark .ring-blue-300 {
-    --tw-ring-color: hsl(214 32% 91%);
+    --tw-ring-color: hsl(var(--ring));
   }
 
-  /* Status and accent colors */
+  /* Status Color Utility Classes - For data indicators only (text, icons, small accents) */
+  .text-status-safe {
+    color: hsl(var(--status-safe));
+  }
+  
+  .text-status-warning {
+    color: hsl(var(--status-warning));
+  }
+  
+  .text-status-risk {
+    color: hsl(var(--status-risk));
+  }
+  
+  .text-status-neutral {
+    color: hsl(var(--status-neutral));
+  }
+  
+  /* Status Badge Classes - For small status labels and badges */
+  .state-badge {
+    @apply px-2 py-1 rounded-md text-xs font-semibold uppercase tracking-wide;
+  }
+  
+  .risk-low,
+  .status-safe {
+    background-color: hsl(var(--status-safe) / 0.1);
+    color: hsl(var(--status-safe));
+    border: 1px solid hsl(var(--status-safe) / 0.2);
+  }
+  
+  .risk-medium,
+  .status-warning {
+    background-color: hsl(var(--status-warning) / 0.1);
+    color: hsl(var(--status-warning));
+    border: 1px solid hsl(var(--status-warning) / 0.2);
+  }
+  
+  .risk-critical,
+  .status-risk {
+    background-color: hsl(var(--status-risk) / 0.1);
+    color: hsl(var(--status-risk));
+    border: 1px solid hsl(var(--status-risk) / 0.2);
+  }
+  
+  /* Status and accent colors - Dark mode mappings (brand-aligned) */
   .dark .bg-blue-50 {
-    background-color: hsl(214 25% 25%);
-  }
-
-  .dark .bg-green-50 {
-    background-color: hsl(215 25% 20%);
+    background-color: hsl(var(--primary) / 0.12);
   }
 
   .dark .bg-red-50 {
-    background-color: hsl(0 25% 25%);
+    background-color: hsl(var(--destructive) / 0.12);
   }
 
   .dark .bg-yellow-50 {
-    background-color: hsl(45 25% 25%);
+    background-color: hsl(var(--status-warning) / 0.12);
   }
 
   .dark .text-blue-600 {
-    color: hsl(214 32% 91%);
-  }
-
-  .dark .text-green-600 {
-    color: hsl(215 15% 70%);
+    color: hsl(var(--primary));
   }
 
   .dark .text-red-600 {
-    color: hsl(0 50% 85%);
+    color: hsl(var(--destructive));
   }
 
   .dark .text-yellow-600 {
-    color: hsl(45 50% 85%);
+    color: hsl(var(--status-warning));
   }
 
-  /* Icon and svg contrast */
-  .dark svg {
-    filter: brightness(1.2) contrast(1.1);
-  }
+  /* Icons: avoid global “boost” filters; rely on semantic icon colors instead. */
 
-  /* Table and list improvements */
-  .dark .odd\:bg-white:nth-child(odd) {
-    background-color: hsl(214 25% 21%);
-  }
 }
 
 /* Ensure all dropdown and popover components have solid backgrounds */
@@ -663,8 +716,8 @@
 .dark [data-radix-select-content],
 .dark [data-radix-dropdown-menu-content],
 .dark [data-radix-popover-content] {
-  background: hsl(214 25% 23%) !important;
-  border: 1px solid hsl(214 20% 40%) !important;
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
 }
 
 /* Ensure toast notifications are always visible with proper z-index */
@@ -679,13 +732,8 @@
 }
 
 .dark [data-radix-toast-root] {
-  background: hsl(214 25% 23%) !important;
-  border: 1px solid hsl(214 20% 40%) !important;
-}
-
-/* Dark mode even row background */
-.dark .even\:bg-gray-50:nth-child(even) {
-  background-color: hsl(214 25% 25%);
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
 }
 
 /* Animations */
@@ -745,17 +793,33 @@
   background: hsl(var(--muted-foreground) / 0.6);
 }
 
+/* Custom Scrollbar (deduped: duplicate block removed; behavior unchanged) */
+
 /* Utility Classes */
-.text-domicile-primary {
-  color: hsl(var(--navy-blue));
-}
 
-.dark .text-domicile-primary {
-  color: hsl(214 100% 60%);
-}
+/* Numeric Typography
+ * - Use tabular + lining numerals for consistent alignment (tables, totals, currency).
+ * - Keep font-family aligned with body typography; use `.numeric-display` for prominent figures.
+ */
+@layer utilities {
+  .numeric {
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
 
-.bg-domicile-solid {
-  background: hsl(var(--background));
+  .numeric-display {
+    font-family: "Inter", sans-serif !important;
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 }
 
 /* Professional button spacing and typography */
@@ -806,19 +870,10 @@
   margin-bottom: 1rem;
 }
 
-/* Form spacing and consistency */
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group:last-child {
-  margin-bottom: 0;
-}
-
+/* Form spacing and consistency - Use space-y-2 for form fields */
 .form-label {
   font-weight: 500;
   font-size: 0.875rem;
-  margin-bottom: 0.5rem;
   display: block;
 }
 
@@ -840,51 +895,29 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
-/* Dark mode icon and text contrast improvements */
-.dark .text-slate-600 {
-  color: hsl(215, 15%, 65%) !important;
+/* Card content wrapping improvements */
+.card-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
 }
 
-.dark .text-slate-800 {
-  color: hsl(210 20% 98%) !important;
+.card-meta-row > * {
+  flex-shrink: 0;
 }
 
-.dark .text-slate-500 {
-  color: hsl(210 11% 71%) !important;
+/* Prevent awkward text wrapping in card headers */
+.card-header-content {
+  min-width: 0;
+  flex: 1 1 0%;
 }
 
-.dark .text-slate-900 {
-  color: hsl(210 20% 98%) !important;
+.card-header-action {
+  flex-shrink: 0;
 }
 
-.dark .text-slate-700 {
-  color: hsl(215, 15%, 75%) !important;
-}
-
-.dark .text-gray-600 {
-  color: hsl(215, 15%, 65%) !important;
-}
-
-.dark .text-gray-500 {
-  color: hsl(215, 15%, 60%) !important;
-}
-
-/* Better button and icon contrast in dark mode */
-.dark button[class*="text-slate-"],
-.dark .text-slate-600,
-.dark .text-slate-700 {
-  transition: all 0.2s ease-in-out;
-}
-
-.dark button[class*="text-slate-"]:hover,
-.dark .hover\:text-blue-700:hover {
-  color: hsl(214, 100%, 70%) !important;
-}
-
-/* Enhanced visibility for icons in dark mode */
-.dark svg {
-  filter: brightness(1.2) contrast(1.1);
-}
+/* Enhanced visibility for icons in dark mode: handled per-component via semantic colors. */
 
 /* Dwellpath Hero Gradient - Custom gradient class for hero sections */
 .dwellpath-hero-gradient {
@@ -892,58 +925,16 @@
 }
 
 .dark .dwellpath-hero-gradient {
-  background: linear-gradient(135deg, hsl(215 28% 17%) 0%, hsl(214 25% 25%) 50%, hsl(213 27% 35%) 100%);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--background)) 0%,
+    hsl(var(--surface-1)) 55%,
+    hsl(var(--surface-3)) 100%
+  );
 }
 
-/* Better component contrast */
-.bg-white {
-  background-color: hsl(var(--card)) !important;
-}
-
-.dark .bg-white {
-  background-color: hsl(215, 25%, 14%) !important;
-}
-
-.bg-gray-50 {
-  background-color: hsl(var(--muted)) !important;
-}
-
-.dark .bg-gray-50 {
-  background-color: hsl(215, 15%, 18%) !important;
-}
-
-.bg-gray-100 {
-  background-color: hsl(var(--muted)) !important;
-}
-
-.dark .bg-gray-100 {
-  background-color: hsl(215, 15%, 20%) !important;
-}
-
-/* Ensure proper text contrast */
-.text-gray-900 {
-  color: hsl(var(--foreground)) !important;
-}
-
-.dark .text-gray-900 {
-  color: hsl(210, 20%, 98%) !important;
-}
-
-.text-gray-800 {
-  color: hsl(var(--foreground)) !important;
-}
-
-.dark .text-gray-800 {
-  color: hsl(210, 20%, 95%) !important;
-}
-
-.dark .bg-domicile-gradient {
-  background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(220, 25%, 12%) 100%);
-}
-
-/* Page Container */
+/* Page Container - Standardized spacing between sections */
 .page-container {
-  @apply space-y-4;
   width: 100%;
 }
 
@@ -975,7 +966,8 @@
 }
 
 .landing-feature-icon {
-  color: hsl(200 100% 80%);
+  /* Calm, brand-adjacent accent on dark hero (avoid bright cyan). */
+  color: hsl(213 27% 84%);
 }
 
 .landing-feature-title {
@@ -1053,10 +1045,6 @@
     @apply space-y-3;
   }
   
-  .card-domicile {
-    @apply rounded-lg;
-  }
-  
   .section-spacing {
     @apply mb-4;
   }
@@ -1077,18 +1065,25 @@
   }
 }
 
-/* Winter Card - Consistent styling for all cards */
+/* Winter Card - Consistent styling for all cards with subtle elevation */
 .winter-card {
-  @apply rounded-xl border bg-card shadow-sm;
-  padding: 1rem;
-  border-radius: 0.75rem;
+  @apply rounded-xl border bg-card;
   border-color: hsl(var(--border));
   background-color: hsl(var(--card));
   overflow: hidden;
+  /* Subtle elevation: soft shadow + very subtle highlight border */
+  box-shadow: 0 1px 3px 0 hsl(var(--foreground) / 0.06), 0 1px 2px 0 hsl(var(--foreground) / 0.04);
+  /* Very subtle top/left highlight for depth */
+  border-top-color: hsl(var(--surface-3) / 0.3);
+  border-left-color: hsl(var(--surface-3) / 0.2);
 }
 
 .dark .winter-card {
-  background-color: hsl(215, 25%, 18%);
-  border-color: hsl(214, 20%, 40%);
-  box-shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.3), 0 1px 2px -1px hsl(0 0% 0% / 0.2);
+  background-color: hsl(var(--card));
+  border-color: hsl(var(--border));
+  /* Dark mode: subtle shadow */
+  box-shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.4), 0 1px 2px 0 hsl(0 0% 0% / 0.3);
+  /* Very subtle top/left highlight for depth (keeps borders whisper-quiet) */
+  border-top-color: hsl(var(--surface-3) / 0.25);
+  border-left-color: hsl(var(--surface-3) / 0.18);
 }

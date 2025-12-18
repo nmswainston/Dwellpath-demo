@@ -79,9 +79,11 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
+        __html: [
+          // Theme-scoped CSS variables (light + dark). These are the single source of truth for chart colors.
+          Object.entries(THEMES)
+            .map(
+              ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
@@ -90,11 +92,26 @@ ${colorConfig
       itemConfig.color
     return color ? `  --color-${key}: ${color};` : null
   })
+  .filter(Boolean)
   .join("\n")}
 }
 `
-          )
-          .join("\n"),
+            )
+            .join("\n"),
+
+          // Bridge classes so components can opt into chart colors without inline styles.
+          colorConfig
+            .map(([key]) => {
+              const safeKey = toChartColorClassKey(key)
+              return `
+[data-chart=${id}] .chart-color-${safeKey} {
+  --color-bg: var(--color-${key});
+  --color-border: var(--color-${key});
+}
+`
+            })
+            .join("\n"),
+        ].join("\n"),
       }}
     />
   )
@@ -104,14 +121,7 @@ const ChartTooltip = RechartsPrimitive.Tooltip
 
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
-    React.ComponentProps<"div"> & {
-      hideLabel?: boolean
-      hideIndicator?: boolean
-      indicator?: "line" | "dot" | "dashed"
-      nameKey?: string
-      labelKey?: string
-    }
+  any
 >(
   (
     {
@@ -140,7 +150,7 @@ const ChartTooltipContent = React.forwardRef<
 
       const [item] = payload
       const key = `${labelKey || item?.dataKey || item?.name || "value"}`
-      const itemConfig = getPayloadConfigFromPayload(config, item, key)
+      const { itemConfig } = getPayloadConfigFromPayload(config, item, key)
       const value =
         !labelKey && typeof label === "string"
           ? config[label as keyof typeof config]?.label || label
@@ -185,10 +195,19 @@ const ChartTooltipContent = React.forwardRef<
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
-          {payload.map((item, index) => {
+          {payload.map((item: any, index: number) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`
-            const itemConfig = getPayloadConfigFromPayload(config, item, key)
+            const { itemConfig, configKey } = getPayloadConfigFromPayload(
+              config,
+              item,
+              key
+            )
             const indicatorColor = color || item.payload.fill || item.color
+            const canUseChartColorClass =
+              !color && !!configKey && hasColorConfig(config, configKey)
+            const chartColorClass = canUseChartColorClass
+              ? `chart-color-${toChartColorClassKey(configKey!)}`
+              : undefined
 
             return (
               <div
@@ -209,6 +228,7 @@ const ChartTooltipContent = React.forwardRef<
                         <div
                           className={cn(
                             "shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg]",
+                            chartColorClass,
                             {
                               "h-2.5 w-2.5": indicator === "dot",
                               "w-1": indicator === "line",
@@ -217,11 +237,15 @@ const ChartTooltipContent = React.forwardRef<
                               "my-0.5": nestLabel && indicator === "dashed",
                             }
                           )}
+                          // Inline CSS variables are only used as a fallback when the payload color can't be
+                          // mapped to a chart config key (e.g., a one-off series color).
                           style={
-                            {
-                              "--color-bg": indicatorColor,
-                              "--color-border": indicatorColor,
-                            } as React.CSSProperties
+                            canUseChartColorClass
+                              ? undefined
+                              : ({
+                                  "--color-bg": indicatorColor,
+                                  "--color-border": indicatorColor,
+                                } as React.CSSProperties)
                           }
                         />
                       )
@@ -239,7 +263,7 @@ const ChartTooltipContent = React.forwardRef<
                         </span>
                       </div>
                       {item.value && (
-                        <span className="font-mono font-medium tabular-nums text-foreground">
+                        <span className="font-medium text-foreground numeric">
                           {item.value.toLocaleString()}
                         </span>
                       )}
@@ -260,11 +284,7 @@ const ChartLegend = RechartsPrimitive.Legend
 
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
-      hideIcon?: boolean
-      nameKey?: string
-    }
+  any
 >(
   (
     { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },
@@ -285,9 +305,18 @@ const ChartLegendContent = React.forwardRef<
           className
         )}
       >
-        {payload.map((item) => {
+        {payload.map((item: any) => {
           const key = `${nameKey || item.dataKey || "value"}`
-          const itemConfig = getPayloadConfigFromPayload(config, item, key)
+          const { itemConfig, configKey } = getPayloadConfigFromPayload(
+            config,
+            item,
+            key
+          )
+          const canUseChartColorClass =
+            !!configKey && hasColorConfig(config, configKey)
+          const chartColorClass = canUseChartColorClass
+            ? `chart-color-${toChartColorClassKey(configKey!)}`
+            : undefined
 
           return (
             <div
@@ -300,10 +329,19 @@ const ChartLegendContent = React.forwardRef<
                 <itemConfig.icon />
               ) : (
                 <div
-                  className="h-2 w-2 shrink-0 rounded-[2px]"
-                  style={{
-                    backgroundColor: item.color,
-                  }}
+                  className={cn(
+                    "h-2 w-2 shrink-0 rounded-[2px] bg-[--color-bg]",
+                    chartColorClass
+                  )}
+                  // Inline CSS variable is only used as a fallback when the legend item can't be mapped to
+                  // a chart config key (e.g., a one-off series color).
+                  style={
+                    canUseChartColorClass
+                      ? undefined
+                      : ({
+                          "--color-bg": item.color,
+                        } as React.CSSProperties)
+                  }
                 />
               )}
               {itemConfig?.label}
@@ -323,7 +361,7 @@ function getPayloadConfigFromPayload(
   key: string
 ) {
   if (typeof payload !== "object" || payload === null) {
-    return undefined
+    return { itemConfig: undefined as ChartConfig[string] | undefined, configKey: undefined as string | undefined }
   }
 
   const payloadPayload =
@@ -350,9 +388,25 @@ function getPayloadConfigFromPayload(
     ] as string
   }
 
-  return configLabelKey in config
-    ? config[configLabelKey]
-    : config[key as keyof typeof config]
+  const resolvedKey = (configLabelKey in config
+    ? configLabelKey
+    : (key as keyof typeof config) in config
+      ? key
+      : undefined) as string | undefined
+
+  return {
+    itemConfig: resolvedKey ? config[resolvedKey] : undefined,
+    configKey: resolvedKey,
+  }
+}
+
+function hasColorConfig(config: ChartConfig, key: string) {
+  const entry = config[key]
+  return !!(entry && ("theme" in entry || "color" in entry))
+}
+
+function toChartColorClassKey(key: string) {
+  return key.replace(/[^a-z0-9_-]/gi, "_")
 }
 
 export {

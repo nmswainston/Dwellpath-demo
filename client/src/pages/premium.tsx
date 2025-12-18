@@ -1,11 +1,14 @@
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Shield, Users, Zap, CheckCircle, ArrowRight } from "lucide-react";
-import AppLayout from "@/components/layout/app-layout";
-import { StaggeredPageContent } from "@/components/layout/page-transition";
+import AppLayout from "@/components/layout/AppLayout";
+import { StaggeredPageContent } from "@/components/layout/PageTransition";
+import { ConsultationContactModal } from "@/components/shared/ConsultationContactModal";
 
 export default function Premium() {
+  const [consultationOpen, setConsultationOpen] = React.useState(false);
   const plans = [
     {
       name: "Free",
@@ -105,19 +108,19 @@ export default function Premium() {
                 <Card key={plan.name} className={`relative ${index === 1 ? 'border-2 border-primary shadow-lg scale-105' : ''}`}>
                   {plan.badge && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <Badge className="bg-primary text-white px-3 py-1">
+                      <Badge className="bg-primary text-primary-foreground px-3 py-1">
                         {plan.badge}
                       </Badge>
                     </div>
                   )}
                   
                   <CardHeader className="text-center pb-6">
-                    <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-                    <div className="mt-4">
+                    <CardTitle className="text-2xl font-bold break-words">{plan.name}</CardTitle>
+                    <div className="mt-4 flex items-baseline justify-center gap-1 flex-wrap">
                       <span className="text-4xl font-bold text-brand-text-light dark:text-brand-text-dark">{plan.price}</span>
-                      <span className="text-brand-text-light/70 dark:text-brand-text-dark/70 ml-2">/{plan.period}</span>
+                      <span className="text-brand-text-light/70 dark:text-brand-text-dark/70">/{plan.period}</span>
                     </div>
-                    <CardDescription className="mt-2 min-h-[48px]">
+                    <CardDescription className="mt-2 min-h-[48px] break-words">
                       {plan.description}
                     </CardDescription>
                   </CardHeader>
@@ -127,7 +130,7 @@ export default function Premium() {
                       {plan.features.map((feature, featureIndex) => (
                         <li key={featureIndex} className="flex items-start space-x-3">
                           <CheckCircle className="h-5 w-5 text-brand-primary mt-0.5 flex-shrink-0" />
-                          <span className="text-brand-text-light dark:text-brand-text-dark">{feature}</span>
+                          <span className="text-brand-text-light dark:text-brand-text-dark min-w-0 break-words">{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -161,9 +164,9 @@ export default function Premium() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardHeader>
-                  <Zap className="h-10 w-10 text-amber-600 mb-2" />
-                  <CardTitle className="text-lg">Auto Tracking</CardTitle>
-                  <CardDescription>
+                  <Zap className="h-10 w-10 text-muted-foreground mb-2 flex-shrink-0" />
+                  <CardTitle className="text-lg break-words">Auto Tracking</CardTitle>
+                  <CardDescription className="break-words">
                     GPS-based location tracking creates an unbreakable audit trail
                   </CardDescription>
                 </CardHeader>
@@ -171,9 +174,9 @@ export default function Premium() {
               
               <Card>
                 <CardHeader>
-                  <Shield className="h-10 w-10 text-blue-600 mb-2" />
-                  <CardTitle className="text-lg">Audit Defense</CardTitle>
-                  <CardDescription>
+                  <Shield className="h-10 w-10 text-muted-foreground mb-2 flex-shrink-0" />
+                  <CardTitle className="text-lg break-words">Audit Defense</CardTitle>
+                  <CardDescription className="break-words">
                     Professional documentation and CPA-ready reports for tax audits
                   </CardDescription>
                 </CardHeader>
@@ -181,9 +184,9 @@ export default function Premium() {
               
               <Card>
                 <CardHeader>
-                  <Users className="h-10 w-10 text-brand-primary mb-2" />
-                  <CardTitle className="text-lg">Expert Support</CardTitle>
-                  <CardDescription>
+                  <Users className="h-10 w-10 text-brand-primary mb-2 flex-shrink-0" />
+                  <CardTitle className="text-lg break-words">Expert Support</CardTitle>
+                  <CardDescription className="break-words">
                     Direct access to tax professionals and compliance experts
                   </CardDescription>
                 </CardHeader>
@@ -191,9 +194,9 @@ export default function Premium() {
               
               <Card>
                 <CardHeader>
-                  <Crown className="h-10 w-10 text-purple-600 mb-2" />
-                  <CardTitle className="text-lg">Wealth Focus</CardTitle>
-                  <CardDescription>
+                  <Crown className="h-10 w-10 text-muted-foreground mb-2 flex-shrink-0" />
+                  <CardTitle className="text-lg break-words">Wealth Focus</CardTitle>
+                  <CardDescription className="break-words">
                     Advanced features designed specifically for high-net-worth individuals
                   </CardDescription>
                 </CardHeader>
@@ -203,7 +206,7 @@ export default function Premium() {
 
           {/* CTA Section */}
           <div className="section-spacing">
-            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+            <Card className="bg-[hsl(var(--brand-sand-muted))] border-border">
               <CardContent className="p-8 text-center">
                 <h3 className="text-2xl font-bold text-brand-text-light dark:text-brand-text-dark mb-4">
                   Ready to Protect Your Wealth?
@@ -216,7 +219,11 @@ export default function Premium() {
                   <Button size="lg">
                     Start Premium Trial
                   </Button>
-                  <Button size="lg" variant="outline">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={() => setConsultationOpen(true)}
+                  >
                     Schedule Consultation
                   </Button>
                 </div>
@@ -225,6 +232,8 @@ export default function Premium() {
           </div>
         </StaggeredPageContent>
       </div>
+
+      <ConsultationContactModal open={consultationOpen} onOpenChange={setConsultationOpen} />
     </AppLayout>
   );
 }

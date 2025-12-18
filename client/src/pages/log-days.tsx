@@ -4,9 +4,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { residencyLogsApi } from "@/lib/apiClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import { handleUnauthorized } from "@/utils/handleUnauthorized";
-import AppLayout from "@/components/layout/app-layout";
-import { StaggeredPageContent } from "@/components/layout/page-transition";
+import { handleUnauthorized } from "@/lib/handleUnauthorized";
+import AppLayout from "@/components/layout/AppLayout";
+import { StaggeredPageContent } from "@/components/layout/PageTransition";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ import { CalendarIcon, Plus, Edit, Trash2 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ResidencyLog } from "@shared/schema";
+import { StateSelectItem } from "@/components/shared/StateSelectItem";
 
 const US_STATES = [
   { code: "AL", name: "Alabama" },
@@ -234,7 +235,7 @@ export default function LogDays() {
 
   if (isLoading || !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="font-body text-slate">Loading...</p>
@@ -250,42 +251,47 @@ export default function LogDays() {
     >
       <div className="page-container">
         <StaggeredPageContent>
-            <div className="card-grid card-grid-2 gap-8">
-              {/* Log Entry Form */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Log Entry Form */}
             <Card>
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center space-x-2 font-heading text-brand-primary dark:text-foreground">
-                  <Plus className="h-5 w-5 text-brand-primary dark:text-accent" />
-                  <span>{editingLog ? "Edit" : "Add"} Residency Days</span>
+                <CardTitle className="flex items-center gap-2 font-heading text-brand-primary dark:text-foreground min-w-0">
+                  <Plus className="h-5 w-5 text-brand-primary dark:text-accent flex-shrink-0" />
+                  <span className="truncate">{editingLog ? "Edit" : "Add"} Residency Days</span>
                 </CardTitle>
-                <CardDescription className="font-body text-muted-foreground dark:text-muted-foreground">
+                <CardDescription className="font-body text-muted-foreground dark:text-muted-foreground break-words">
                   {editingLog ? "Update your" : "Record your"} time spent in a specific state
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-4">
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="form-group">
+                  <div className="space-y-2">
                     <Label htmlFor="state" className="form-label">State *</Label>
                     <Select value={selectedState} onValueChange={setSelectedState}>
-                      <SelectTrigger>
+                      <SelectTrigger id="state" name="state">
                         <SelectValue placeholder="Select a state" />
                       </SelectTrigger>
                       <SelectContent>
                         {US_STATES.map((state) => (
-                          <SelectItem key={state.code} value={state.code}>
-                            {state.name} ({state.code})
-                          </SelectItem>
+                          <StateSelectItem
+                            key={state.code}
+                            value={state.code}
+                            stateCode={state.code}
+                            label={state.name}
+                          />
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="grid grid-cols-2 gap-6">
-                    <div className="form-group">
+                    <div className="space-y-2">
                       <Label htmlFor="startDate" className="form-label">Start Date *</Label>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
+                            id="startDate"
+                            name="startDate"
                             variant="outline"
                             className={cn(
                               "w-full justify-start text-left font-normal",
@@ -307,11 +313,13 @@ export default function LogDays() {
                       </Popover>
                     </div>
 
-                    <div className="form-group">
+                    <div className="space-y-2">
                       <Label htmlFor="endDate" className="form-label">End Date *</Label>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
+                            id="endDate"
+                            name="endDate"
                             variant="outline"
                             className={cn(
                               "w-full justify-start text-left font-normal",
@@ -334,7 +342,7 @@ export default function LogDays() {
                     </div>
                   </div>
 
-                  <div>
+                  <div className="space-y-2">
                     <Label htmlFor="purpose">Purpose (Optional)</Label>
                     <Input
                       id="purpose"
@@ -344,7 +352,7 @@ export default function LogDays() {
                     />
                   </div>
 
-                  <div>
+                  <div className="space-y-2">
                     <Label htmlFor="notes">Notes (Optional)</Label>
                     <Textarea
                       id="notes"
@@ -381,8 +389,8 @@ export default function LogDays() {
             {/* Recent Logs */}
             <Card>
               <CardHeader>
-                <CardTitle>Recent Logs</CardTitle>
-                <CardDescription>
+                <CardTitle className="break-words">Recent Logs</CardTitle>
+                <CardDescription className="break-words">
                   Your recent residency day entries
                 </CardDescription>
               </CardHeader>
@@ -405,19 +413,24 @@ export default function LogDays() {
                       return (
                         <div key={log.id} className="border border-border rounded-xl p-4 bg-card shadow-sm">
                           <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2 mb-2">
-                                <div className="w-6 h-6 bg-primary rounded flex items-center justify-center text-white text-xs font-bold">
-                                  {log.state}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center space-x-2 mb-2 min-w-0">
+                                <div
+                                  className={cn(
+                                    "w-10 h-10 bg-brand-accent dark:bg-accent rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg flex-shrink-0",
+                                    "w-6 h-6 bg-primary rounded shadow-none shrink-0 text-primary-foreground/70 text-[10px] leading-none",
+                                  )}
+                                >
+                                  {log.state.toUpperCase()}
                                 </div>
-                                <h4 className="font-heading font-medium text-brand-primary dark:text-foreground">{stateName}</h4>
-                                <span className="text-sm font-body text-muted-foreground dark:text-muted-foreground">• {days} day{days !== 1 ? 's' : ''}</span>
+                                <h4 className="font-heading font-medium text-brand-primary dark:text-foreground min-w-0 truncate">{stateName}</h4>
+                                <span className="text-sm font-body text-muted-foreground dark:text-muted-foreground flex-shrink-0">• {days} day{days !== 1 ? 's' : ''}</span>
                               </div>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-sm text-muted-foreground">
                                 {format(parseISO(log.startDate), "MMM dd")} - {format(parseISO(log.endDate), "MMM dd, yyyy")}
                               </p>
                               {log.purpose && (
-                                <p className="text-sm text-gray-500 mt-1">{log.purpose}</p>
+                                <p className="text-sm text-muted-foreground mt-1">{log.purpose}</p>
                               )}
                             </div>
                             <div className="flex space-x-2">
@@ -445,7 +458,7 @@ export default function LogDays() {
                 )}
               </CardContent>
             </Card>
-            </div>
+          </div>
         </StaggeredPageContent>
       </div>
     </AppLayout>

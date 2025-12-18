@@ -18,8 +18,13 @@ const Progress = React.forwardRef<
     {...props}
   >
     <ProgressPrimitive.Indicator
-      className="h-full w-full flex-1 bg-primary transition-all"
-      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+      className="h-full w-full flex-1 bg-primary/60 transition-all translate-x-[calc(-1*var(--progress-value))]"
+      // Inline CSS variable is required: progress value is dynamic at runtime; translation is handled by the class above.
+      style={
+        {
+          "--progress-value": `${100 - (value || 0)}%`,
+        } as React.CSSProperties
+      }
     />
   </ProgressPrimitive.Root>
 ))

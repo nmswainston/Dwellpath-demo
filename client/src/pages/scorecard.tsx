@@ -3,15 +3,16 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import { handleUnauthorized } from "@/utils/handleUnauthorized";
-import AppLayout from "@/components/layout/app-layout";
-import { StaggeredPageContent } from "@/components/layout/page-transition";
+import { handleUnauthorized } from "@/lib/handleUnauthorized";
+import AppLayout from "@/components/layout/AppLayout";
+import { StaggeredPageContent } from "@/components/layout/PageTransition";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, CheckCircle, Shield, TrendingUp, Calendar, MapPin, DollarSign, Home, Car, Vote } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { StatValue } from "@/components/shared/StatValue";
 
 interface StateRiskData {
   state: string;
@@ -104,10 +105,10 @@ const mockStateData: StateRiskData[] = [
 
 function getRiskBadgeVariant(riskLevel: string) {
   switch (riskLevel) {
-    case 'safe': return 'default';
-    case 'low': return 'secondary';
+    case 'safe':
+    case 'low': return 'default';
     case 'moderate': return 'outline';
-    case 'high': return 'destructive';
+    case 'high':
     case 'critical': return 'destructive';
     default: return 'outline';
   }
@@ -115,12 +116,23 @@ function getRiskBadgeVariant(riskLevel: string) {
 
 function getRiskColor(riskLevel: string) {
   switch (riskLevel) {
-    case 'safe': return 'text-brand-primary';
-    case 'low': return 'text-brand-text-light dark:text-brand-text-dark';
-    case 'moderate': return 'text-brand-text-light/80 dark:text-brand-text-dark/80';
-    case 'high': return 'text-brand-text-light/70 dark:text-brand-text-dark/70';
-    case 'critical': return 'text-brand-text-light dark:text-brand-text-dark';
-    default: return 'text-brand-text-light/70 dark:text-brand-text-dark/70';
+    case 'safe':
+    case 'low': return 'text-status-safe';
+    case 'moderate': return 'text-status-warning';
+    case 'high':
+    case 'critical': return 'text-status-risk';
+    default: return 'text-status-neutral';
+  }
+}
+
+function getStatusBadgeClass(riskLevel: string) {
+  switch (riskLevel) {
+    case 'safe':
+    case 'low': return 'status-safe';
+    case 'moderate': return 'status-warning';
+    case 'high':
+    case 'critical': return 'status-risk';
+    default: return '';
   }
 }
 
@@ -151,10 +163,10 @@ export default function Scorecard() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center winter-card p-8 max-w-md">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-600 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary flex items-center justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-2 border-white/30 border-t-white"></div>
           </div>
-          <h3 className="text-lg font-heading font-semibold text-brand-primary dark:text-foreground mb-2">Loading Scorecard</h3>
+          <h3 className="text-lg font-heading font-semibold text-foreground mb-2">Loading Scorecard</h3>
           <p className="font-body text-muted-foreground dark:text-muted-foreground">Calculating your residency risk...</p>
         </div>
       </div>
@@ -174,80 +186,87 @@ export default function Scorecard() {
     >
       <div className="page-container">
         <StaggeredPageContent>
-              {/* Overall Risk Summary */}
-              <Card className="border-l-4 border-l-brand-bg-dark">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-2xl font-heading font-bold text-brand-primary dark:text-foreground">Overall Risk Assessment</CardTitle>
-                      <CardDescription className="font-body text-muted-foreground dark:text-muted-foreground">Your tax residency compliance status across all states</CardDescription>
-                    </div>
-                    <div className="text-right">
-                      <div className={cn("text-3xl font-bold", getRiskColor(overallRisk))}>
-                        {overallRisk === 'safe' ? '✅ SAFE' : 
-                         overallRisk === 'moderate' ? '⚠️ MODERATE' : 
-                         '🚨 HIGH RISK'}
-                      </div>
-                      <p className="text-sm text-slate-600 mt-1">Tax Year 2024</p>
-                    </div>
+          {/* Overall Risk Summary */}
+          <section className="space-y-6">
+            <Card className="border-l-4 border-l-primary">
+              <CardHeader>
+                <div className="grid grid-cols-[1fr_auto] gap-4 items-start">
+                  <div className="min-w-0">
+                    <CardTitle className="text-2xl font-heading font-bold text-foreground break-words">Overall Risk Assessment</CardTitle>
+                    <CardDescription className="font-body text-muted-foreground break-words mt-2">Your tax residency compliance status across all states</CardDescription>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="text-center p-4 rounded-xl bg-brand-bg-light border border-brand-primary">
-                      <div className="text-2xl font-bold text-brand-primary">
-                        {mockStateData.filter(s => s.riskLevel === 'safe').length}
-                      </div>
-                      <div className="text-sm text-brand-text-light">Safe States</div>
+                  <div className="text-right shrink-0">
+                    <div className={cn("text-3xl font-bold whitespace-nowrap", getRiskColor(overallRisk))}>
+                      {overallRisk === 'safe' || overallRisk === 'low' ? '✅ SAFE' : 
+                       overallRisk === 'moderate' ? '⚠️ MODERATE' : 
+                       '🚨 HIGH RISK'}
                     </div>
-                    <div className="text-center p-4 rounded-xl bg-yellow-50 border border-yellow-200">
-                      <div className="text-2xl font-bold text-yellow-600">
-                        {mockStateData.filter(s => s.riskLevel === 'moderate').length}
-                      </div>
-                      <div className="text-sm text-yellow-700">Moderate Risk</div>
-                    </div>
-                    <div className="text-center p-4 rounded-xl bg-red-50 border border-red-200">
-                      <div className="text-2xl font-bold text-red-600">
-                        {mockStateData.filter(s => s.riskLevel === 'high' || s.riskLevel === 'critical').length}
-                      </div>
-                      <div className="text-sm text-red-700">High Risk</div>
-                    </div>
+                    <p className="text-sm text-muted-foreground mt-2">Tax Year 2024</p>
                   </div>
-                </CardContent>
-              </Card>
-
-              {/* State-by-State Breakdown */}
-              <div>
-                <div className="header-spacing">
-                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight">State-by-State Analysis</h2>
-                  <p className="text-slate-600 text-sm mt-1">Detailed risk assessment for each state you've tracked</p>
                 </div>
-                
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center p-4 rounded-xl bg-status-safe/5 border border-status-safe/20">
+                    <StatValue as="div" className="text-status-safe">
+                      {mockStateData.filter(s => s.riskLevel === 'safe').length}
+                    </StatValue>
+                    <div className="text-sm text-foreground">Safe States</div>
+                  </div>
+                  <div className="text-center p-4 rounded-xl bg-status-warning/5 border border-status-warning/20">
+                    <StatValue as="div" className="text-status-warning">
+                      {mockStateData.filter(s => s.riskLevel === 'moderate').length}
+                    </StatValue>
+                    <div className="text-sm text-status-warning/90">Moderate Risk</div>
+                  </div>
+                  <div className="text-center p-4 rounded-xl bg-status-risk/5 border border-status-risk/20">
+                    <StatValue as="div" className="text-status-risk">
+                      {mockStateData.filter(s => s.riskLevel === 'high' || s.riskLevel === 'critical').length}
+                    </StatValue>
+                    <div className="text-sm text-status-risk/90">High Risk</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+
+          {/* State-by-State Breakdown */}
+          <section className="space-y-6">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-foreground tracking-tight">State-by-State Analysis</h2>
+              <p className="text-muted-foreground text-sm">Detailed risk assessment for each state you've tracked</p>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {mockStateData.map((stateData) => {
                     const RiskIcon = getRiskIcon(stateData.riskLevel);
                     
                     return (
                       <Card key={stateData.state} className="hover:shadow-lg transition-shadow duration-200">
                         <CardHeader className="pb-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-3">
-                              <div className="w-12 h-12 rounded-xl bg-brand-accent dark:bg-accent flex items-center justify-center text-white font-bold text-lg">
-                                {stateData.state}
+                          <div className="grid grid-cols-[1fr_auto] gap-3 items-start">
+                            <div className="flex items-center space-x-3 min-w-0">
+                              <div
+                                className={cn(
+                                  "w-10 h-10 bg-brand-accent dark:bg-accent rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg flex-shrink-0",
+                                  "w-12 h-12 bg-primary text-primary-foreground/60 shadow-none",
+                                )}
+                              >
+                                {stateData.state.toUpperCase()}
                               </div>
-                              <div>
-                                <CardTitle className="text-xl">{stateData.stateName}</CardTitle>
-                                <CardDescription>Tax residency analysis</CardDescription>
+                              <div className="min-w-0 flex-1">
+                                <CardTitle className="text-xl break-words">{stateData.stateName}</CardTitle>
+                                <CardDescription className="break-words">Tax residency analysis</CardDescription>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <div className="flex items-center space-x-2 mb-2">
-                                <RiskIcon className={cn("w-5 h-5", getRiskColor(stateData.riskLevel))} />
-                                <span className={cn("text-lg font-bold", getRiskColor(stateData.riskLevel))}>
+                            <div className="text-right shrink-0">
+                              <div className="flex items-center justify-end gap-2 mb-2">
+                                <RiskIcon className={cn("w-5 h-5 shrink-0", getRiskColor(stateData.riskLevel))} />
+                                <span className={cn("text-lg font-bold whitespace-nowrap numeric", getRiskColor(stateData.riskLevel))}>
                                   {stateData.riskPercentage}% Safe
                                 </span>
                               </div>
-                              <Badge variant={getRiskBadgeVariant(stateData.riskLevel)} className="text-xs">
+                              <Badge variant={getRiskBadgeVariant(stateData.riskLevel)} className={cn("text-xs state-badge", getStatusBadgeClass(stateData.riskLevel))}>
                                 {stateData.riskLevel.toUpperCase()} RISK
                               </Badge>
                             </div>
@@ -258,11 +277,11 @@ export default function Scorecard() {
                           {/* Days Tracking */}
                           <div>
                             <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center space-x-2">
-                                <Calendar className="w-4 h-4 text-brand-primary dark:text-accent" />
-                                <span className="text-sm font-medium">Days Tracked</span>
+                              <div className="flex items-center space-x-2 min-w-0 flex-1">
+                                <Calendar className="w-4 h-4 text-primary shrink-0" />
+                                <span className="text-sm font-medium truncate">Days Tracked</span>
                               </div>
-                              <span className="text-sm text-slate-600">
+                              <span className="text-sm text-muted-foreground shrink-0 numeric">
                                 {stateData.daysTracked}/{stateData.daysLimit} days
                               </span>
                             </div>
@@ -270,7 +289,7 @@ export default function Scorecard() {
                               value={(stateData.daysTracked / stateData.daysLimit) * 100} 
                               className="h-2"
                             />
-                            <p className="text-xs text-slate-500 mt-1">
+                            <p className="text-xs text-muted-foreground mt-1 numeric">
                               {stateData.daysLimit - stateData.daysTracked} days until threshold
                             </p>
                           </div>
@@ -278,50 +297,48 @@ export default function Scorecard() {
                           {/* Expense Activity */}
                           <div>
                             <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center space-x-2">
-                                <DollarSign className="w-4 h-4 text-brand-primary dark:text-accent" />
-                                <span className="text-sm font-medium">Expense Activity</span>
+                              <div className="flex items-center space-x-2 min-w-0 flex-1">
+                                <DollarSign className="w-4 h-4 text-primary shrink-0" />
+                                <span className="text-sm font-medium truncate">Expense Activity</span>
                               </div>
-                              <span className="text-sm text-slate-600">
+                              <span className="text-sm text-muted-foreground shrink-0 numeric">
                                 ${stateData.expenseAmount.toLocaleString()}
                               </span>
                             </div>
-                            <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                              <div 
-                                className="h-full bg-blue-500 rounded-full transition-all duration-300"
-                                style={{ width: `${Math.min((stateData.expenseAmount / 50000) * 100, 100)}%` }}
-                              />
-                            </div>
+                            <Progress
+                              value={Math.min((stateData.expenseAmount / 50000) * 100, 100)}
+                              className="h-2 bg-muted"
+                            />
                           </div>
 
                           {/* Sticky Ties */}
                           <div>
-                            <div className="flex items-center space-x-2 mb-3">
-                              <MapPin className="w-4 h-4 text-brand-primary dark:text-accent" />
-                              <span className="text-sm font-medium">Sticky Ties</span>
+                            <div className="flex items-center space-x-2 mb-3 min-w-0">
+                              <MapPin className="w-4 h-4 text-primary shrink-0" />
+                              <span className="text-sm font-medium min-w-0">Sticky Ties</span>
                             </div>
                             <div className="grid grid-cols-2 gap-2 text-xs">
-                              <div className="flex items-center space-x-2">
-                                <Car className={cn("w-3 h-3", stateData.stickyTies.driversLicense ? "text-brand-primary" : "text-slate-400")} />
-                                <span className={stateData.stickyTies.driversLicense ? "text-brand-text-light" : "text-slate-500"}>
+                              <div className="flex items-center space-x-2 min-w-0">
+                                <Car className={cn("w-3 h-3 shrink-0", stateData.stickyTies.driversLicense ? "text-primary" : "text-muted-foreground")} />
+                                <span className={cn("truncate", stateData.stickyTies.driversLicense ? "text-foreground" : "text-muted-foreground")}>
                                   Driver's License
                                 </span>
                               </div>
-                              <div className="flex items-center space-x-2">
-                                <Home className={cn("w-3 h-3", stateData.stickyTies.homeOwnership ? "text-brand-primary" : "text-slate-400")} />
-                                <span className={stateData.stickyTies.homeOwnership ? "text-brand-text-light" : "text-slate-500"}>
+                              <div className="flex items-center space-x-2 min-w-0">
+                                <Home className={cn("w-3 h-3 shrink-0", stateData.stickyTies.homeOwnership ? "text-primary" : "text-muted-foreground")} />
+                                <span className={cn("truncate", stateData.stickyTies.homeOwnership ? "text-foreground" : "text-muted-foreground")}>
                                   Home Ownership
                                 </span>
                               </div>
-                              <div className="flex items-center space-x-2">
-                                <Vote className={cn("w-3 h-3", stateData.stickyTies.voterRegistration ? "text-brand-primary" : "text-slate-400")} />
-                                <span className={stateData.stickyTies.voterRegistration ? "text-brand-text-light" : "text-slate-500"}>
+                              <div className="flex items-center space-x-2 min-w-0">
+                                <Vote className={cn("w-3 h-3 shrink-0", stateData.stickyTies.voterRegistration ? "text-primary" : "text-muted-foreground")} />
+                                <span className={cn("truncate", stateData.stickyTies.voterRegistration ? "text-foreground" : "text-muted-foreground")}>
                                   Voter Registration
                                 </span>
                               </div>
-                              <div className="flex items-center space-x-2">
-                                <TrendingUp className={cn("w-3 h-3", stateData.stickyTies.bankAccounts ? "text-brand-primary" : "text-slate-400")} />
-                                <span className={stateData.stickyTies.bankAccounts ? "text-brand-text-light" : "text-slate-500"}>
+                              <div className="flex items-center space-x-2 min-w-0">
+                                <TrendingUp className={cn("w-3 h-3 shrink-0", stateData.stickyTies.bankAccounts ? "text-primary" : "text-muted-foreground")} />
+                                <span className={cn("truncate", stateData.stickyTies.bankAccounts ? "text-foreground" : "text-muted-foreground")}>
                                   Bank Accounts
                                 </span>
                               </div>
@@ -341,38 +358,40 @@ export default function Scorecard() {
                       </Card>
                     );
                   })}
-                </div>
-              </div>
+            </div>
+          </section>
 
-              {/* Quick Actions */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recommended Actions</CardTitle>
-                  <CardDescription>Steps to improve your compliance status</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Quick Actions */}
+          <section className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="break-words">Recommended Actions</CardTitle>
+                <CardDescription className="break-words">Steps to improve your compliance status</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <Button className="justify-start h-auto p-4 text-left" variant="outline">
                       <div>
                         <div className="font-medium">Update Day Tracking</div>
-                        <div className="text-xs text-slate-600 mt-1">Log recent travel</div>
+                        <div className="text-xs text-muted-foreground mt-1">Log recent travel</div>
                       </div>
                     </Button>
                     <Button className="justify-start h-auto p-4 text-left" variant="outline">
                       <div>
                         <div className="font-medium">Add Sticky Ties</div>
-                        <div className="text-xs text-slate-600 mt-1">Update state connections</div>
+                        <div className="text-xs text-muted-foreground mt-1">Update state connections</div>
                       </div>
                     </Button>
                     <Button className="justify-start h-auto p-4 text-left" variant="outline">
                       <div>
                         <div className="font-medium">Export Report</div>
-                        <div className="text-xs text-slate-600 mt-1">Generate compliance summary</div>
+                        <div className="text-xs text-muted-foreground mt-1">Generate compliance summary</div>
                       </div>
                     </Button>
                   </div>
                 </CardContent>
-              </Card>
+            </Card>
+          </section>
         </StaggeredPageContent>
       </div>
     </AppLayout>

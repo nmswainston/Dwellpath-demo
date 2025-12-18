@@ -4,9 +4,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { expensesApi } from "@/lib/apiClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import { handleUnauthorized } from "@/utils/handleUnauthorized";
-import AppLayout from "@/components/layout/app-layout";
-import { StaggeredPageContent } from "@/components/layout/page-transition";
+import { handleUnauthorized } from "@/lib/handleUnauthorized";
+import AppLayout from "@/components/layout/AppLayout";
+import { StaggeredPageContent } from "@/components/layout/PageTransition";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,8 @@ import { CalendarIcon, Plus, Edit, Trash2, Receipt } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Expense } from "@shared/schema";
+import { StatValue } from "@/components/shared/StatValue";
+import { StateSelectItem } from "@/components/shared/StateSelectItem";
 
 const US_STATES = [
   { code: "AL", name: "Alabama" },
@@ -252,7 +254,7 @@ export default function Expenses() {
 
   if (isLoading || !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="font-body text-slate">Loading...</p>
@@ -269,12 +271,12 @@ export default function Expenses() {
       <div className="page-container">
         <StaggeredPageContent>
           {/* State Summary Section */}
-          <div className="mb-8">
-            <div className="mb-6">
+          <section className="space-y-6">
+            <div className="space-y-2">
               <h2 className="section-title font-heading text-brand-primary dark:text-foreground">Expense Summary</h2>
               <p className="section-subtitle font-body text-muted-foreground dark:text-muted-foreground">Overview of expenses by state</p>
             </div>
-            <div className="card-grid card-grid-4 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {Object.entries(totalByState).map(([state, total]) => {
               const stateName = US_STATES.find(s => s.code === state)?.name || state;
               return (
@@ -283,12 +285,19 @@ export default function Expenses() {
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="flex items-center space-x-2 mb-1">
-                          <div className="w-6 h-6 bg-primary rounded flex items-center justify-center text-white text-xs font-bold">
-                            {state}
+                          <div
+                            className={cn(
+                              "w-10 h-10 bg-brand-accent dark:bg-accent rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg flex-shrink-0",
+                              "w-6 h-6 bg-primary rounded shadow-none text-primary-foreground/70 text-[10px] leading-none",
+                            )}
+                          >
+                            {state.toUpperCase()}
                           </div>
-                          <p className="text-sm font-medium text-gray-900">{stateName}</p>
+                            <p className="text-sm font-medium text-foreground">{stateName}</p>
                         </div>
-                        <p className="text-2xl font-bold text-gray-900">${total.toLocaleString()}</p>
+                          <StatValue as="p" className="text-foreground">
+                          ${total.toLocaleString()}
+                        </StatValue>
                       </div>
                       <Receipt className="h-8 w-8 text-brand-primary dark:text-accent" />
                     </div>
@@ -296,40 +305,46 @@ export default function Expenses() {
                 </Card>
               );
             })}
-          </div>
+            </div>
+          </section>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <section className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Expense Entry Form */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2 font-heading text-brand-primary dark:text-foreground">
-                  <Plus className="h-5 w-5 text-brand-primary dark:text-accent" />
-                  <span>{editingExpense ? "Edit" : "Add"} Expense</span>
+                <CardTitle className="flex items-center gap-2 font-heading text-brand-primary dark:text-foreground min-w-0">
+                  <Plus className="h-5 w-5 text-brand-primary dark:text-accent flex-shrink-0" />
+                  <span className="truncate">{editingExpense ? "Edit" : "Add"} Expense</span>
                 </CardTitle>
-                <CardDescription className="font-body text-muted-foreground dark:text-muted-foreground">
+                <CardDescription className="font-body text-muted-foreground dark:text-muted-foreground break-words">
                   {editingExpense ? "Update your" : "Record an"} expense with state location for audit tracking
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-2">
                     <Label htmlFor="state">State *</Label>
                     <Select value={selectedState} onValueChange={setSelectedState}>
-                      <SelectTrigger className="text-foreground">
+                      <SelectTrigger id="state" name="state" className="text-foreground">
                         <SelectValue placeholder="Select a state" className="text-foreground" />
                       </SelectTrigger>
                       <SelectContent className="text-foreground">
                         {US_STATES.map((state) => (
-                          <SelectItem key={state.code} value={state.code} className="text-foreground">
-                            {state.name} ({state.code})
-                          </SelectItem>
+                          <StateSelectItem
+                            key={state.code}
+                            value={state.code}
+                            stateCode={state.code}
+                            label={state.name}
+                            className="text-foreground"
+                          />
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="amount">Amount *</Label>
                       <Input
                         id="amount"
@@ -342,10 +357,10 @@ export default function Expenses() {
                       />
                     </div>
 
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="category">Category *</Label>
                       <Select value={category} onValueChange={setCategory}>
-                        <SelectTrigger className="text-foreground">
+                        <SelectTrigger id="category" name="category" className="text-foreground">
                           <SelectValue placeholder="Select category" className="text-foreground" />
                         </SelectTrigger>
                         <SelectContent className="text-foreground">
@@ -359,11 +374,13 @@ export default function Expenses() {
                     </div>
                   </div>
 
-                  <div>
+                  <div className="space-y-2">
                     <Label htmlFor="expenseDate">Date *</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
+                          id="expenseDate"
+                          name="expenseDate"
                           variant="outline"
                           className={cn(
                             "w-full justify-start text-left font-normal",
@@ -385,7 +402,7 @@ export default function Expenses() {
                     </Popover>
                   </div>
 
-                  <div>
+                  <div className="space-y-2">
                     <Label htmlFor="description">Description (Optional)</Label>
                     <Textarea
                       id="description"
@@ -422,8 +439,8 @@ export default function Expenses() {
             {/* Recent Expenses */}
             <Card>
               <CardHeader>
-                <CardTitle>Recent Expenses</CardTitle>
-                <CardDescription>
+                <CardTitle className="break-words">Recent Expenses</CardTitle>
+                <CardDescription className="break-words">
                   Your recent expense entries
                 </CardDescription>
                 <div className="pt-2">
@@ -434,9 +451,13 @@ export default function Expenses() {
                     <SelectContent className="text-foreground">
                       <SelectItem value="all" className="text-foreground">All States</SelectItem>
                       {US_STATES.map((state) => (
-                        <SelectItem key={state.code} value={state.code} className="text-foreground">
-                          {state.name} ({state.code})
-                        </SelectItem>
+                        <StateSelectItem
+                          key={state.code}
+                          value={state.code}
+                          stateCode={state.code}
+                          label={state.name}
+                          className="text-foreground"
+                        />
                       ))}
                     </SelectContent>
                   </Select>
@@ -446,11 +467,11 @@ export default function Expenses() {
                 {expensesLoading ? (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading expenses...</p>
+                    <p className="text-muted-foreground">Loading expenses...</p>
                   </div>
                 ) : filteredExpenses.length === 0 ? (
                   <div className="text-center py-8">
-                    <p className="text-gray-600">
+                    <p className="text-muted-foreground">
                       {filterState === "all" 
                         ? "No expenses recorded yet. Start by adding your first expense!" 
                         : `No expenses found for ${US_STATES.find(s => s.code === filterState)?.name}.`
@@ -465,19 +486,24 @@ export default function Expenses() {
                       return (
                         <div key={expense.id} className="border border-border rounded-xl p-4 bg-card shadow-sm">
                           <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2 mb-2">
-                                <div className="w-6 h-6 bg-primary rounded flex items-center justify-center text-white text-xs font-bold">
-                                  {expense.state}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center space-x-2 mb-2 min-w-0">
+                                <div
+                                  className={cn(
+                                    "w-10 h-10 bg-brand-accent dark:bg-accent rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg flex-shrink-0",
+                                    "w-6 h-6 bg-primary rounded shadow-none shrink-0 text-primary-foreground/70 text-[10px] leading-none",
+                                  )}
+                                >
+                                  {expense.state.toUpperCase()}
                                 </div>
-                                <h4 className="font-medium text-gray-900">${parseFloat(expense.amount).toLocaleString()}</h4>
-                                <span className="text-sm text-gray-500">• {expense.category}</span>
+                                <h4 className="font-medium text-foreground min-w-0 truncate">${parseFloat(expense.amount).toLocaleString()}</h4>
+                                <span className="text-sm text-muted-foreground flex-shrink-0">• {expense.category}</span>
                               </div>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-sm text-muted-foreground">
                                 {stateName} • {format(parseISO(expense.expenseDate), "MMM dd, yyyy")}
                               </p>
                               {expense.description && (
-                                <p className="text-sm text-gray-500 mt-1">{expense.description}</p>
+                                <p className="text-sm text-muted-foreground mt-1">{expense.description}</p>
                               )}
                             </div>
                             <div className="flex space-x-2">
@@ -505,8 +531,8 @@ export default function Expenses() {
                 )}
               </CardContent>
             </Card>
-          </div>
-          </div>
+            </div>
+          </section>
         </StaggeredPageContent>
       </div>
     </AppLayout>

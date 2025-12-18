@@ -3,12 +3,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { propertiesApi } from "@/lib/apiClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import { handleUnauthorized } from "@/utils/handleUnauthorized";
-import AppLayout from "@/components/layout/app-layout";
-import { StaggeredPageContent } from "@/components/layout/page-transition";
+import { handleUnauthorized } from "@/lib/handleUnauthorized";
+import { cn } from "@/lib/utils";
+import AppLayout from "@/components/layout/AppLayout";
+import { StaggeredPageContent } from "@/components/layout/PageTransition";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,10 +19,11 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Home, MapPin, Plus, Edit, Trash2, Calendar, DollarSign, Building, Camera, X, Upload } from "lucide-react";
-import { Property, InsertProperty, insertPropertySchema } from "@shared/schema";
+import { Property } from "@shared/schema";
 import { PropertyAddressField } from "@/components/ui/property-address-field";
 import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
-import { z } from "zod";
+import { APP_MODAL_CONTENT_BASE_CLASSNAME, APP_MODAL_CONTENT_FIXED_SIZE_CLASSNAME, APP_MODAL_CONTENT_SCROLL_CLASSNAME, APP_MODAL_OVERLAY_CLASSNAME } from "@/lib/modalStyles";
+import { StateSelectItem } from "@/components/shared/StateSelectItem";
 
 const US_STATES = [
   { code: "AL", name: "Alabama" },
@@ -90,27 +91,27 @@ interface PropertyFormData {
   state: string;
   zipCode: string;
   propertyType: string;
-  purchaseDate?: string | null;
-  estimatedValue?: string | null;
-  notes?: string | null;
-  imageUrl?: string | null;
+  purchaseDate?: string;
+  estimatedValue?: string;
+  notes?: string;
+  imageUrl?: string;
 }
 
 function EditPropertyForm({ property, onSuccess }: { property: Property; onSuccess: () => void }) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const form = useForm<PropertyFormData>({
+  const form = useForm<PropertyFormData, any, PropertyFormData>({
     defaultValues: {
-      name: property.name,
-      address: property.address,
-      city: property.city,
-      state: property.state,
-      zipCode: property.zipCode,
-      propertyType: property.propertyType,
+      name: property.name ?? "",
+      address: property.address ?? "",
+      city: property.city ?? "",
+      state: property.state ?? "",
+      zipCode: property.zipCode ?? "",
+      propertyType: property.propertyType ?? "",
       purchaseDate: property.purchaseDate 
         ? new Date(property.purchaseDate).toISOString().split('T')[0] 
-        : null,
+        : "",
       estimatedValue: property.estimatedValue?.toString() || "",
       notes: property.notes || "",
       imageUrl: property.imageUrl || "",
@@ -186,7 +187,7 @@ function EditPropertyForm({ property, onSuccess }: { property: Property; onSucce
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 leading-relaxed">
         <FormField
           control={form.control}
           name="name"
@@ -223,7 +224,7 @@ function EditPropertyForm({ property, onSuccess }: { property: Property; onSucce
           )}
         />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <FormField
             control={form.control}
             name="city"
@@ -275,9 +276,12 @@ function EditPropertyForm({ property, onSuccess }: { property: Property; onSucce
                 </FormControl>
                 <SelectContent>
                   {US_STATES.map((state) => (
-                    <SelectItem key={state.code} value={state.code}>
-                      {state.name} ({state.code})
-                    </SelectItem>
+                    <StateSelectItem
+                      key={state.code}
+                      value={state.code}
+                      stateCode={state.code}
+                      label={state.name}
+                    />
                   ))}
                 </SelectContent>
               </Select>
@@ -311,7 +315,7 @@ function EditPropertyForm({ property, onSuccess }: { property: Property; onSucce
           )}
         />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <FormField
             control={form.control}
             name="purchaseDate"
@@ -362,7 +366,7 @@ function EditPropertyForm({ property, onSuccess }: { property: Property; onSucce
                         reader.readAsDataURL(file);
                       }
                     }}
-                    className="file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300"
+                    className="file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-muted file:text-foreground hover:file:bg-muted/80"
                     {...field}
                   />
                   {value && (
@@ -375,7 +379,7 @@ function EditPropertyForm({ property, onSuccess }: { property: Property; onSucce
                       <button
                         type="button"
                         onClick={() => onChange("")}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
+                        className="absolute top-1 right-1 bg-[hsl(var(--destructive)/0.12)] border border-[hsl(var(--destructive)/0.25)] text-[hsl(var(--destructive))] rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-[hsl(var(--destructive)/0.18)]"
                       >
                         ×
                       </button>
@@ -402,27 +406,27 @@ function EditPropertyForm({ property, onSuccess }: { property: Property; onSucce
           )}
         />
 
-        <div className="grid grid-cols-3 gap-4 pt-6 border-t">
-          <Button 
-            type="button"
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={deletePropertyMutation.isPending}
-            className="flex items-center justify-center gap-2 px-4"
-          >
-            <Trash2 className="h-4 w-4 text-brand-primary dark:text-accent" />
-            {deletePropertyMutation.isPending ? "Deleting..." : "Delete"}
-          </Button>
-          
-          <div></div>
-          
-          <Button 
-            type="submit" 
-            className="flex items-center justify-center px-6" 
-            disabled={updatePropertyMutation.isPending}
-          >
-            {updatePropertyMutation.isPending ? "Saving..." : "Save Changes"}
-          </Button>
+        <div className="sticky bottom-0 pt-4 border-t bg-card">
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={deletePropertyMutation.isPending}
+              className="flex items-center justify-center gap-2"
+            >
+              <Trash2 className="h-4 w-4 text-destructive-foreground" />
+              {deletePropertyMutation.isPending ? "Deleting..." : "Delete"}
+            </Button>
+
+            <Button
+              type="submit"
+              className="flex items-center justify-center"
+              disabled={updatePropertyMutation.isPending}
+            >
+              {updatePropertyMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </div>
         </div>
       </form>
     </Form>
@@ -433,7 +437,7 @@ function PropertyForm({ onSuccess }: { onSuccess: () => void }) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const form = useForm<PropertyFormData>({
+  const form = useForm<PropertyFormData, any, PropertyFormData>({
     defaultValues: {
       name: "",
       address: "",
@@ -441,10 +445,10 @@ function PropertyForm({ onSuccess }: { onSuccess: () => void }) {
       state: "",
       zipCode: "",
       propertyType: "",
-      purchaseDate: null,
-      estimatedValue: null,
-      notes: null,
-      imageUrl: null,
+      purchaseDate: "",
+      estimatedValue: "",
+      notes: "",
+      imageUrl: "",
     },
   });
 
@@ -485,7 +489,7 @@ function PropertyForm({ onSuccess }: { onSuccess: () => void }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 leading-relaxed">
         <FormField
           control={form.control}
           name="name"
@@ -522,7 +526,7 @@ function PropertyForm({ onSuccess }: { onSuccess: () => void }) {
           )}
         />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <FormField
             control={form.control}
             name="city"
@@ -574,9 +578,12 @@ function PropertyForm({ onSuccess }: { onSuccess: () => void }) {
                 </FormControl>
                 <SelectContent>
                   {US_STATES.map((state) => (
-                    <SelectItem key={state.code} value={state.code}>
-                      {state.name}
-                    </SelectItem>
+                    <StateSelectItem
+                      key={state.code}
+                      value={state.code}
+                      stateCode={state.code}
+                      label={state.name}
+                    />
                   ))}
                 </SelectContent>
               </Select>
@@ -610,7 +617,7 @@ function PropertyForm({ onSuccess }: { onSuccess: () => void }) {
           )}
         />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <FormField
             control={form.control}
             name="purchaseDate"
@@ -661,7 +668,7 @@ function PropertyForm({ onSuccess }: { onSuccess: () => void }) {
                         reader.readAsDataURL(file);
                       }
                     }}
-                    className="file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300"
+                    className="file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-muted file:text-foreground hover:file:bg-muted/80"
                     {...field}
                   />
                   {value && (
@@ -674,7 +681,7 @@ function PropertyForm({ onSuccess }: { onSuccess: () => void }) {
                       <button
                         type="button"
                         onClick={() => onChange("")}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
+                        className="absolute top-1 right-1 bg-[hsl(var(--destructive)/0.12)] border border-[hsl(var(--destructive)/0.25)] text-[hsl(var(--destructive))] rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-[hsl(var(--destructive)/0.18)]"
                       >
                         ×
                       </button>
@@ -701,13 +708,15 @@ function PropertyForm({ onSuccess }: { onSuccess: () => void }) {
           )}
         />
 
-        <Button 
-          type="submit" 
-          className="w-full" 
-          disabled={createPropertyMutation.isPending}
-        >
-          {createPropertyMutation.isPending ? "Adding Property..." : "Add Property"}
-        </Button>
+        <div className="sticky bottom-0 pt-4 border-t bg-card">
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={createPropertyMutation.isPending}
+          >
+            {createPropertyMutation.isPending ? "Adding Property..." : "Add Property"}
+          </Button>
+        </div>
       </form>
     </Form>
   );
@@ -717,13 +726,13 @@ function PropertyCard({ property, onEdit }: { property: Property; onEdit: (prope
   const getPropertyTypeColor = (type: string) => {
     switch (type) {
       case "primary":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
+        return "bg-[hsl(var(--primary)/0.10)] text-[hsl(var(--primary))] border border-[hsl(var(--primary)/0.20)]";
       case "secondary":
-        return "bg-brand-bg-light text-brand-text-light dark:bg-brand-bg-dark dark:text-brand-text-dark";
+        return "bg-[hsl(var(--brand-sand-muted))] text-foreground border border-[hsl(var(--brand-sand-border))]";
       case "rental":
-        return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300";
+        return "bg-[hsl(var(--status-neutral)/0.10)] text-[hsl(var(--status-neutral))] border border-[hsl(var(--status-neutral)/0.20)]";
       default:
-        return "bg-brand-bg-light text-brand-text-light dark:bg-brand-bg-dark dark:text-brand-text-dark";
+        return "bg-muted text-foreground border border-border";
     }
   };
 
@@ -759,9 +768,9 @@ function PropertyCard({ property, onEdit }: { property: Property; onEdit: (prope
         </div>
       )}
       <CardHeader className="pb-4">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-8 h-8 bg-muted rounded-lg">
+        <div className="mb-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center justify-center w-8 h-8 bg-muted rounded-lg shrink-0">
               {property.imageUrl ? (
                 <Camera className="h-4 w-4 text-muted-foreground" />
               ) : (
@@ -773,20 +782,20 @@ function PropertyCard({ property, onEdit }: { property: Property; onEdit: (prope
             </Badge>
           </div>
         </div>
-        <CardTitle className="text-lg font-semibold leading-tight">{property.name}</CardTitle>
+        <CardTitle className="text-lg font-semibold leading-tight break-words">{property.name}</CardTitle>
         <CardDescription className="flex items-center gap-1 text-sm">
-          <MapPin className="h-4 w-4 flex-shrink-0" />
-          <span className="truncate">{property.address}</span>
+          <MapPin className="h-4 w-4 shrink-0" />
+          <span className="truncate min-w-0 flex-1">{property.address}</span>
         </CardDescription>
-        <CardDescription className="text-sm text-muted-foreground">
+        <CardDescription className="text-sm text-muted-foreground break-words">
           {property.city}, {property.state} {property.zipCode}
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-0 space-y-3">
         {property.estimatedValue && (
           <div className="flex items-center gap-2 text-sm">
-            <DollarSign className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-            <span className="font-medium text-foreground">
+            <DollarSign className="h-4 w-4 text-muted-foreground shrink-0" />
+            <span className="font-medium text-foreground min-w-0 flex-1 truncate">
               {formatCurrency(property.estimatedValue)}
             </span>
           </div>
@@ -794,8 +803,8 @@ function PropertyCard({ property, onEdit }: { property: Property; onEdit: (prope
         
         {property.purchaseDate && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4 flex-shrink-0" />
-            <span>
+            <Calendar className="h-4 w-4 shrink-0" />
+            <span className="min-w-0 flex-1 truncate">
               Purchased {new Date(property.purchaseDate).toLocaleDateString()}
             </span>
           </div>
@@ -858,39 +867,71 @@ export default function PropertiesPage() {
                       Add Property
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[500px]">
-                    <DialogHeader>
-                      <DialogTitle>Add New Property</DialogTitle>
-                      <DialogDescription>
-                        Add a property to track your residency ties and state presence.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <PropertyForm onSuccess={() => setShowAddDialog(false)} />
+                  <DialogContent
+                    overlayClassName={APP_MODAL_OVERLAY_CLASSNAME}
+                    className={cn(
+                      APP_MODAL_CONTENT_BASE_CLASSNAME,
+                      APP_MODAL_CONTENT_FIXED_SIZE_CLASSNAME,
+                      "p-0 overflow-hidden flex flex-col"
+                    )}
+                  >
+                    {/* Header (fixed) */}
+                    <div className="shrink-0 px-6 sm:px-8 pt-6 pb-4 border-b border-foreground/10">
+                      <DialogHeader>
+                        <DialogTitle>Add New Property</DialogTitle>
+                        <DialogDescription className="leading-relaxed">
+                          Add a property to track your residency ties and state presence.
+                        </DialogDescription>
+                      </DialogHeader>
+                    </div>
+
+                    {/* Body (scrollable) */}
+                    <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-6 sm:px-8 py-6">
+                      <div className="mx-auto w-full max-w-4xl">
+                        <PropertyForm onSuccess={() => setShowAddDialog(false)} />
+                      </div>
+                    </div>
                   </DialogContent>
                 </Dialog>
                 
                 {/* Edit Property Dialog */}
                 <Dialog open={!!editingProperty} onOpenChange={() => setEditingProperty(null)}>
-                  <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-                    <DialogHeader className="text-left space-y-3 pb-2">
-                      <div className="flex items-start gap-3">
-                        <div className="flex items-center justify-center w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                          <Edit className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <div className="flex-1">
-                          <DialogTitle className="text-xl font-semibold">Edit Property Details</DialogTitle>
-                          <DialogDescription className="text-base mt-1">
-                            Manage your property information, upload photos, and maintain accurate records for your portfolio.
-                          </DialogDescription>
-                        </div>
-                      </div>
-                    </DialogHeader>
-                    {editingProperty && (
-                      <EditPropertyForm 
-                        property={editingProperty} 
-                        onSuccess={() => setEditingProperty(null)} 
-                      />
+                  <DialogContent
+                    overlayClassName={APP_MODAL_OVERLAY_CLASSNAME}
+                    className={cn(
+                      APP_MODAL_CONTENT_BASE_CLASSNAME,
+                      APP_MODAL_CONTENT_FIXED_SIZE_CLASSNAME,
+                      "p-0 overflow-hidden flex flex-col"
                     )}
+                  >
+                    {/* Header (fixed) */}
+                    <div className="shrink-0 px-6 sm:px-8 pt-6 pb-4 border-b border-foreground/10">
+                      <DialogHeader className="text-left space-y-3">
+                        <div className="flex items-start gap-3">
+                          <div className="flex items-center justify-center w-10 h-10 bg-muted border border-border rounded-lg shrink-0">
+                            <Edit className="h-5 w-5 text-muted-foreground" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <DialogTitle className="text-xl font-semibold">Edit Property Details</DialogTitle>
+                            <DialogDescription className="text-base mt-1 leading-relaxed">
+                              Manage your property information, upload photos, and maintain accurate records for your portfolio.
+                            </DialogDescription>
+                          </div>
+                        </div>
+                      </DialogHeader>
+                    </div>
+
+                    {/* Body (scrollable) */}
+                    <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-6 sm:px-8 py-6">
+                      <div className="mx-auto w-full max-w-4xl">
+                        {editingProperty && (
+                          <EditPropertyForm
+                            property={editingProperty}
+                            onSuccess={() => setEditingProperty(null)}
+                          />
+                        )}
+                      </div>
+                    </div>
                   </DialogContent>
                 </Dialog>
               </div>

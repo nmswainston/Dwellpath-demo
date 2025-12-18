@@ -46,7 +46,7 @@ export class PDFGenerator {
     });
     
     await browser.close();
-    return pdf;
+    return Buffer.from(pdf);
   }
 
   async generateStateSummary(userId: string, state: string, taxYear: number): Promise<Buffer> {
@@ -70,7 +70,7 @@ export class PDFGenerator {
     });
     
     await browser.close();
-    return pdf;
+    return Buffer.from(pdf);
   }
 
   async generateExpenseReport(userId: string, taxYear: number, state?: string): Promise<Buffer> {
@@ -102,7 +102,7 @@ export class PDFGenerator {
     });
     
     await browser.close();
-    return pdf;
+    return Buffer.from(pdf);
   }
 
   private async gatherAuditData(userId: string, taxYear: number): Promise<AuditReportData> {
@@ -225,6 +225,7 @@ export class PDFGenerator {
         th { background: #f9fafb; font-weight: 600; }
         tr:nth-child(even) { background: #f9fafb; }
         .page-break { page-break-before: always; }
+        .journal-entry { margin: 20px 0; border-left: 4px solid #2563eb; padding-left: 20px; }
         .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 12px; }
       </style>
     </head>
@@ -330,7 +331,7 @@ export class PDFGenerator {
       <div class="section page-break">
         <h2>Journal Entries</h2>
         ${data.journalEntries.map(entry => `
-          <div style="margin: 20px 0; border-left: 4px solid #2563eb; padding-left: 20px;">
+          <div class="journal-entry">
             <h4>${entry.title} - ${entry.entryDate}</h4>
             <p><strong>State:</strong> ${entry.state || 'N/A'} | <strong>Category:</strong> ${entry.category}</p>
             <p>${entry.content}</p>
