@@ -6,7 +6,6 @@ import {
   insertResidencyLogSchema, 
   insertExpenseSchema, 
   insertJournalEntrySchema,
-  insertAiChatSchema,
   insertFeedbackSchema
 } from "@shared/schema";
 import { 
@@ -14,7 +13,7 @@ import {
   generateComplianceSummary,
   generateAuditLetter 
 } from "./openai";
-import { onboardingAI, type UserProfile } from "./onboardingAI";
+import { onboardingAI } from "./onboardingAI";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -484,7 +483,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // In a production environment, you would upload the PDF to cloud storage
       // For now, we'll return the PDF directly and save metadata to database
-      const auditDocument = await storage.createAuditDocument({
+      await storage.createAuditDocument({
         userId,
         documentType,
         taxYear,

@@ -12,17 +12,18 @@ import { StaggeredPageContent } from "@/components/layout/PageTransition";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Home, MapPin, Plus, Edit, Trash2, Calendar, DollarSign, Building, Camera, X, Upload } from "lucide-react";
+import { MapPin, Plus, Edit, Trash2, Calendar, DollarSign, Building, Camera } from "lucide-react";
 import { Property } from "@shared/schema";
-import { PropertyAddressField } from "@/components/ui/property-address-field";
-import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
-import { APP_MODAL_CONTENT_BASE_CLASSNAME, APP_MODAL_CONTENT_FIXED_SIZE_CLASSNAME, APP_MODAL_CONTENT_SCROLL_CLASSNAME, APP_MODAL_OVERLAY_CLASSNAME } from "@/lib/modalStyles";
+import {
+  APP_MODAL_CONTENT_BASE_CLASSNAME,
+  APP_MODAL_CONTENT_FIXED_SIZE_CLASSNAME,
+  APP_MODAL_OVERLAY_CLASSNAME,
+} from "@/lib/modalStyles";
 import { StateSelectItem } from "@/components/shared/StateSelectItem";
 
 const US_STATES = [

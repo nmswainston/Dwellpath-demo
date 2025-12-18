@@ -56,17 +56,6 @@ export default function AlertBanner() {
     }
   };
 
-  const getAlertColor = (severity: string) => {
-    switch (severity) {
-      case 'critical':
-        return 'border-brand-bg-dark/30 bg-brand-bg-light/50 dark:bg-brand-bg-dark/50';
-      case 'high':
-        return 'border-brand-bg-dark/30 bg-brand-bg-light/50 dark:bg-brand-bg-dark/50';
-      default:
-        return 'border-brand-bg-dark/30 bg-brand-bg-light/50 dark:bg-brand-bg-dark/50';
-    }
-  };
-
   return (
     <div className="mb-6 winter-card border-l-4 border-l-brand-bg-dark">
       <Alert variant={getAlertVariant(criticalAlert.severity || 'default')} className="bg-transparent border-0 shadow-none">

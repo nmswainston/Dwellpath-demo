@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export interface UserProfile {
+interface UserProfile {
   userType: 'snowbird' | 'remote-worker' | 'property-owner' | 'frequent-traveler';
   primaryState: string;
   secondaryState?: string;
@@ -13,7 +13,7 @@ export interface UserProfile {
   techSavviness: 'beginner' | 'intermediate' | 'advanced';
 }
 
-export interface PersonalizedRecommendation {
+interface PersonalizedRecommendation {
   id: string;
   type: 'feature' | 'strategy' | 'warning' | 'tip';
   priority: 'high' | 'medium' | 'low';
@@ -25,7 +25,7 @@ export interface PersonalizedRecommendation {
   relatedFeatures: string[];
 }
 
-export class OnboardingAI {
+class OnboardingAI {
   // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
   private model = "gpt-4o";
 
@@ -100,6 +100,7 @@ Return the response as a JSON array with this structure:
     userProfile: UserProfile,
     context?: any
   ): Promise<any> {
+    void context;
     const prompt = `Generate content for a ${stepType} configuration step for a Dwellpath user.
 
 User Profile:

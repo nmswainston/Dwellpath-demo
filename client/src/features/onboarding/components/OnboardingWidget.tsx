@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useOnboarding } from "@/features/onboarding/hooks/useOnboarding";
 import { 
   Sparkles, 
   PlayCircle, 
-  RotateCcw, 
   X,
   ChevronRight,
   Lightbulb

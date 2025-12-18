@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 import { storage } from './storage';
 import type { User, ResidencyLog, Expense, JournalEntry } from '@shared/schema';
 
-export interface AuditReportData {
+interface AuditReportData {
   user: User;
   taxYear: number;
   state?: string;
@@ -125,7 +125,7 @@ export class PDFGenerator {
     let riskLevel: 'low' | 'medium' | 'high' | 'critical' = 'low';
     const stateGroups = this.groupByState(residencyLogs);
     
-    for (const [state, logs] of Object.entries(stateGroups)) {
+    for (const logs of Object.values(stateGroups)) {
       const stateDays = logs.reduce((total, log) => {
         const start = new Date(log.startDate);
         const end = new Date(log.endDate);

@@ -1,12 +1,11 @@
 import { usePreferences } from "@/features/preferences/hooks/usePreferences";
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Settings, Palette, Bell, Globe, Calendar, DollarSign } from 'lucide-react';
+import { Palette, Bell, Globe, Calendar, DollarSign } from 'lucide-react';
 import AppLayout from "@/components/layout/AppLayout";
 
 export default function SettingsPage() {

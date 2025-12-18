@@ -37,7 +37,7 @@ import {
   type InsertUserPreferences,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, gte, lte, sql } from "drizzle-orm";
+import { eq, and, desc, gte, lte } from "drizzle-orm";
 import { HAS_DATABASE } from "./config";
 
 export interface IStorage {
@@ -125,7 +125,7 @@ export interface IStorage {
   completeOnboardingStep(stepId: string): Promise<OnboardingStep>;
 }
 
-export class DatabaseStorage implements IStorage {
+class DatabaseStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
@@ -352,7 +352,7 @@ export class DatabaseStorage implements IStorage {
     const highTaxStates = ['NY', 'CA', 'NJ', 'CT', 'HI'];
     const estimatedTaxSavings = stateStats
       .filter(stat => highTaxStates.includes(stat.state) && stat.totalDays < 183)
-      .reduce((total, stat) => total + 15000, 0); // Rough estimate per high-tax state avoided
+      .reduce((total) => total + 15000, 0); // Rough estimate per high-tax state avoided
     
     // Determine risk level
     const maxRisk = Math.max(...stateStats.map(stat => stat.totalDays / 183));

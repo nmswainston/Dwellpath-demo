@@ -43,8 +43,6 @@ import {
   APP_MODAL_OVERLAY_CLASSNAME,
 } from "@/lib/modalStyles";
 
-const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
-
 const US_STATES = [
   "Alabama",
   "Alaska",

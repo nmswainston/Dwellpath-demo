@@ -148,7 +148,6 @@ export default function FeedbackWidget() {
             {/* Detailed Feedback Options */}
             <div className="space-y-2">
               {FEEDBACK_TYPES.map((type) => {
-                const Icon = type.icon;
                 return (
                   <Button
                     key={type.type}

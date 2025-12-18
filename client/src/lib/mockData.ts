@@ -21,7 +21,7 @@ import type {
 const now = new Date();
 const currentYear = now.getFullYear();
 
-export type DemoData = {
+type DemoData = {
   user: User;
   residencyLogs: ResidencyLog[];
   expenses: Expense[];

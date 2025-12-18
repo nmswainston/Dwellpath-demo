@@ -52,7 +52,6 @@ function Router() {
     existingTour,
     completeProfileSetup,
     closeOnboarding,
-    setIsOnboardingOpen,
     setIsProfileSetupOpen,
   } = useOnboarding();
 

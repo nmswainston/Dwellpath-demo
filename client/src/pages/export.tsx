@@ -9,7 +9,6 @@ import type { ResidencyLog, Expense, JournalEntry } from "@shared/schema";
 import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -80,7 +79,7 @@ const US_STATES = [
 
 export default function Export() {
   const { toast } = useToast();
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const [selectedState, setSelectedState] = useState<string>("");
   const [exportYear, setExportYear] = useState<string>(new Date().getFullYear().toString());
   const [letterContent, setLetterContent] = useState("");

@@ -2,8 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Plus, MapPin, AlertTriangle, CheckCircle } from "lucide-react";
+import { Plus, MapPin } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
 import { cn } from "@/lib/utils";
@@ -74,27 +73,10 @@ export default function ResidencyTracker() {
     queryKey: ["/api/dashboard/residency-stats"],
   });
 
-  const getProgressColor = (totalDays: number, isAtRisk: boolean) => {
-    if (isAtRisk) return "bg-gradient-to-r from-brand-bg-dark to-brand-bg-dark/80";
-    if (totalDays > 120) return "bg-gradient-to-r from-brand-bg-dark/80 to-brand-bg-dark/60";
-    return "bg-brand-primary";
-  };
-
   const getProgressValue = (totalDays: number) => {
     return Math.min((totalDays / 183) * 100, 100);
   };
 
-  const getStateGradient = (index: number) => {
-    const gradients = [
-      "from-brand-bg-dark to-brand-bg-dark/80",
-      "from-brand-bg-dark/90 to-brand-bg-dark/70", 
-      "from-brand-bg-dark/80 to-brand-bg-dark/60",
-      "from-brand-primary to-brand-accent",
-      "from-brand-bg-dark/70 to-brand-bg-dark/50",
-      "from-brand-bg-dark/60 to-brand-bg-dark/40",
-    ];
-    return gradients[index % gradients.length];
-  };
 
   if (isLoading) {
     return (
@@ -167,7 +149,7 @@ export default function ResidencyTracker() {
           </div>
         ) : (
           <div className="space-y-6">
-            {residencyStats.map((stat: ResidencyStats, index: number) => {
+            {residencyStats.map((stat: ResidencyStats) => {
               const stateName = US_STATES.find(s => s.code === stat.state)?.name || stat.state;
               const progressValue = getProgressValue(stat.totalDays);
               const isHighTaxState = ['CA', 'NY', 'NJ', 'CT', 'HI', 'IL'].includes(stat.state);

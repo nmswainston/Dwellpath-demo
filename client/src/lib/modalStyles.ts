@@ -18,7 +18,3 @@ export const APP_MODAL_CONTENT_BASE_CLASSNAME = [
 export const APP_MODAL_CONTENT_FIXED_SIZE_CLASSNAME =
   "w-[min(1040px,calc(100vw-2rem))] h-[min(860px,92vh)]";
 
-export const APP_MODAL_CONTENT_SCROLL_CLASSNAME =
-  "overflow-y-auto overscroll-contain";
-
-

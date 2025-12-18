@@ -70,7 +70,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
     }
   };
 
-  const getSeverityIcon = (severity: string) => {
+  const getSeverityIcon = () => {
     return AlertTriangle;
   };
 
@@ -100,7 +100,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
         </div>
 
         {/* Right: actions aligned within the same top rail */}
-        <div className="h-[var(--app-shell-sidebar-header-h)] flex items-end space-x-4">
+        <div className="h-(--app-shell-sidebar-header-h) flex items-end space-x-4">
           {/* Notifications Popover */}
           <Popover open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
             <PopoverTrigger asChild>
@@ -142,7 +142,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
                   ) : (
                     <div className="max-h-96 overflow-y-auto bg-background">
                       {alerts.map((alert: AlertType) => {
-                        const SeverityIcon = getSeverityIcon(alert.severity || 'low');
+                        const SeverityIcon = getSeverityIcon();
                         return (
                           <div key={alert.id} className="border-b border-border p-4 hover:bg-muted/50 transition-colors bg-background">
                             <div className="flex items-start justify-between space-x-3">

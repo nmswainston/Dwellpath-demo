@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Bell, CheckCircle, AlertTriangle, Info, Calendar, X } from "lucide-react";
+import { Bell, CheckCircle, AlertTriangle, Info, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { alertsApi } from "@/lib/apiClient";
@@ -79,17 +79,6 @@ export default function NotificationsPanel() {
         return <Info className="h-4 w-4 text-status-warning" />;
       default:
         return <CheckCircle className="h-4 w-4 text-status-safe" />;
-    }
-  };
-
-  const getAlertBadgeVariant = (severity: string | null | undefined) => {
-    switch (severity) {
-      case "critical":
-        return "destructive";
-      case "high":
-        return "secondary";
-      default:
-        return "outline";
     }
   };
 

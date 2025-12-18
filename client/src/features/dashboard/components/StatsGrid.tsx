@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, MapPin, DollarSign, Shield, Crown, Building2 } from "lucide-react";
+import { Calendar, MapPin, DollarSign, Shield } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatValue } from "@/components/shared/StatValue";
 
@@ -64,16 +64,6 @@ export default function StatsGrid() {
       case 'high': return 'text-status-risk';
       case 'critical': return 'text-status-risk';
       default: return 'text-status-neutral';
-    }
-  };
-
-  const getRiskBackground = (riskLevel: string) => {
-    switch (riskLevel) {
-      case 'low': return 'bg-primary';
-      case 'medium': return 'bg-accent';
-      case 'high': return 'bg-destructive';
-      case 'critical': return 'bg-destructive';
-      default: return 'bg-muted';
     }
   };
 

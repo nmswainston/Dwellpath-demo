@@ -14,7 +14,7 @@ let dbInstance: ReturnType<typeof drizzle> | null = null;
  * Throws only when called, not at import time.
  * Returns null if no database is configured.
  */
-export function getDb() {
+function getDb() {
   if (!HAS_DATABASE) {
     throw new Error(
       "Database is not configured. DATABASE_URL must be set to use database features."
@@ -32,13 +32,6 @@ export function getDb() {
   }
   
   return dbInstance;
-}
-
-/**
- * Check if database is available
- */
-export function hasDatabase(): boolean {
-  return HAS_DATABASE;
 }
 
 // For backward compatibility, export db as a getter that throws when accessed

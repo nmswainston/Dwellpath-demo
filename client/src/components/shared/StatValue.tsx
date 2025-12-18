@@ -6,7 +6,7 @@ type StatValueOwnProps<T extends React.ElementType> = {
   className?: string;
 };
 
-export type StatValueProps<T extends React.ElementType = "span"> = StatValueOwnProps<T> &
+type StatValueProps<T extends React.ElementType = "span"> = StatValueOwnProps<T> &
   Omit<React.ComponentPropsWithoutRef<T>, keyof StatValueOwnProps<T>>;
 
 /**

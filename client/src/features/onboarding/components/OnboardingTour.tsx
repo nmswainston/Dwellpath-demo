@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { onboardingApi } from '@/lib/apiClient';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
@@ -70,7 +70,7 @@ export function OnboardingTour({ isOpen, onClose, userProfile }: OnboardingTourP
       setCurrentStepIndex(0);
       queryClient.invalidateQueries({ queryKey: ['/api/onboarding/tour'] });
     },
-    onError: (error) => {
+    onError: () => {
       toast({
         title: "Error starting tour",
         description: "Please try again later",

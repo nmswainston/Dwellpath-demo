@@ -15,7 +15,7 @@ const cardVariants = cva("rounded-xl border shadow-sm", {
   },
 })
 
-export interface CardProps
+interface CardProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof cardVariants> {}
 
@@ -136,12 +136,7 @@ CardFooter.displayName = "CardFooter"
 
 export { 
   Card,
-  cardVariants,
   CardHeader, 
-  CardHeaderRow,
-  CardHeaderLeft,
-  CardHeaderRight,
-  CardFooter, 
   CardTitle, 
   CardDescription, 
   CardContent 

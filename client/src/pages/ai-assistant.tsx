@@ -8,7 +8,6 @@ import { handleUnauthorized } from "@/lib/handleUnauthorized";
 import AppLayout from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Bot, Send, Mic, User, Download, FileText, Calculator } from "lucide-react";

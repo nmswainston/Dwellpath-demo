@@ -12,9 +12,9 @@ const sizeClassMap = {
   80: 'w-20 h-20',
 } as const;
 
-export type LogoIconSize = keyof typeof sizeClassMap;
+type LogoIconSize = keyof typeof sizeClassMap;
 
-export interface LogoIconProps {
+interface LogoIconProps {
   /** Logical size in CSS pixels (maps to Tailwind width/height utilities). */
   size?: LogoIconSize;
   /** If true, renders as decorative (alt="" + aria-hidden). */

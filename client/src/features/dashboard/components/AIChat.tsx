@@ -36,7 +36,6 @@ export default function AIChat() {
   const { toast } = useToast();
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
-  const [isTyping, setIsTyping] = useState(false);
 
   const { data: recentChats = [] } = useQuery<AiChat[]>({
     queryKey: ["/api/ai/chats"],
@@ -51,11 +50,9 @@ export default function AIChat() {
 
   const chatMutation = useMutation({
     mutationFn: async (userMessage: string) => {
-      setIsTyping(true);
       return await aiApi.chat(userMessage);
     },
     onSuccess: (data) => {
-      setIsTyping(false);
       setChatHistory((prev) => [
         {
           userMessage: data.userMessage,

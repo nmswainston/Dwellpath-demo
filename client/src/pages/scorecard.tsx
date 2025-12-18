@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { useQuery } from "@tanstack/react-query";
-import { isUnauthorizedError } from "@/lib/authUtils";
 import { handleUnauthorized } from "@/lib/handleUnauthorized";
 import AppLayout from "@/components/layout/AppLayout";
 import { StaggeredPageContent } from "@/components/layout/PageTransition";

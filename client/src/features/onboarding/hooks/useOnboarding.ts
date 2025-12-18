@@ -6,7 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { DEV_MODE } from '@/lib/config/dev';
 import type { OnboardingTour as OnboardingTourModel } from '@shared/schema';
 
-export interface UserProfile {
+interface UserProfile {
   userType: 'snowbird' | 'remote-worker' | 'property-owner' | 'frequent-traveler';
   primaryState: string;
   secondaryState?: string;
@@ -45,7 +45,7 @@ export function useOnboarding() {
         description: "We'll configure Dwellpath for your residency profile with personalized recommendations",
       });
     },
-    onError: (error) => {
+    onError: () => {
       toast({
         title: "Configuration Error",
         description: "An error occurred while starting configuration. Please try again.",

@@ -1,10 +1,9 @@
 import session from "express-session";
 import type { Express, RequestHandler } from "express";
 import connectPg from "connect-pg-simple";
-import { storage } from "./storage";
 import { HAS_DATABASE, SESSION_SECRET } from "./config";
 
-export function getSession() {
+function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   
   // Use MemoryStore when no database is available (dev/preview mode only)
@@ -45,7 +44,7 @@ export async function setupAuth(app: Express) {
   app.use(getSession());
   
   // Restore user from session
-  app.use((req: any, res, next) => {
+  app.use((req: any, _res, next) => {
     if (req.session?.passport?.user) {
       req.user = req.session.passport.user;
     }

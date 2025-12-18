@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useSidebar } from "@/hooks/useSidebar";
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { 
   Home, 
   Calendar, 
@@ -9,7 +9,6 @@ import {
   Bot, 
   Download, 
   Settings,
-  MapPin,
   AlertTriangle,
   TrendingUp,
   FileCheck,
