@@ -1,56 +1,60 @@
 # Dwellpath Demo
 
-A demo version of the Dwellpath residency management platform.
+A full-stack residency management platform — demo build.
 
-## Overview
+## Problem
 
-Dwellpath is a property/residency management application. This demo build showcases the core features with a full-stack architecture — a Vite + React frontend, a Node.js backend, and a Drizzle ORM database layer — all in a single monorepo.
+Property managers and residency programs rely on fragmented spreadsheets and manual processes to track applications, units, and residents. There's no affordable, purpose-built tool for this workflow.
+
+## Solution
+
+Dwellpath is a full-stack web app that centralizes the entire residency management process — from application intake to unit assignment — in one place. This demo showcases the core features with a real backend and database layer.
+
+## Screenshots
+
+> *Add 2–4 screenshots here*
 
 ## Tech Stack
 
 - TypeScript
 - Vite
 - Drizzle ORM
-- Netlify (deployment)
-- shadcn/ui components
+- Tailwind CSS
+- shadcn/ui
+- Netlify
 
-## Getting Started
+## Features
 
-### Prerequisites
+- Resident application tracking and management
+- Unit inventory and assignment
+- Full-stack monorepo (client + server + shared types)
+- Drizzle ORM for type-safe database access
+- shadcn/ui component library
 
-- Node.js 18+
-- npm
-
-### Installation
+## Installation
 
 ```bash
 npm install
 ```
 
-### Development
+Copy the environment file and fill in your database credentials:
 
 ```bash
+cp .env.example .env
 npm run dev
 ```
 
-### Build
+## Lessons Learned
 
-```bash
-npm run build
-```
+- Full-stack monorepo architecture keeps shared types in sync between client and server
+- Drizzle ORM provides excellent TypeScript ergonomics with minimal overhead
+- Building a demo with real data models (not mocked) makes stakeholder conversations much more productive
 
-## Project Structure
+## Future Improvements
 
-```
-client/      # Frontend Vite/React application
-server/      # Backend API
-shared/      # Shared types and utilities
-docs/        # Project documentation
-```
-
-## Deployment
-
-Configured for Netlify via `netlify.toml`. Database migrations managed by Drizzle (`drizzle.config.ts`).
+- Real-time notifications for application status changes
+- Document upload for applications
+- Payment processing for deposits
 
 ## Related
 
