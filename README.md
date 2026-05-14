@@ -1,75 +1,61 @@
-# dwellpath
-Dwellpath - Precision residency tracking for modern wealth
+# Dwellpath Demo
 
-## Quick Start
+A demo version of the Dwellpath residency management platform.
 
-### Demo Mode (Netlify-ready)
+## Overview
 
-This repo is configured to run as a **static SPA** (Vite) with **no backend required**.
+Dwellpath is a property/residency management application. This demo build showcases the core features with a full-stack architecture — a Vite + React frontend, a Node.js backend, and a Drizzle ORM database layer — all in a single monorepo.
 
-- **Local dev**: `npm run dev` (client-only)
-- **Build**: `npm run build` outputs to `dist/`
-- **Netlify**: `netlify.toml` includes SPA redirects so refresh works on any route
+## Tech Stack
 
-#### Demo Mode flag
+- TypeScript
+- Vite
+- Drizzle ORM
+- Netlify (deployment)
+- shadcn/ui components
 
-Demo mode is controlled via Vite env:
+## Getting Started
 
-- `VITE_DEMO_MODE=true` → uses in-browser mock data (no `/api` calls)
-- `VITE_DEMO_MODE=false` → uses real `/api/...` endpoints (only if you run the optional server)
+### Prerequisites
 
-If you want to override defaults, copy `docs/env.example` to `.env` in the repo root.
+- Node.js 18+
+- npm
 
-### Running in Preview Mode (legacy server, no DB)
-
-The optional Express server can run locally without a database for preview and development purposes. Simply run:
+### Installation
 
 ```bash
 npm install
-npm run dev:server
 ```
 
-The app will automatically detect that no `DATABASE_URL` is set and run in **NO_DB mode**:
-- Uses in-memory session storage (sessions cleared on server restart)
-- API endpoints return mock/demo data
-- Perfect for exploring the UI and features
-- No database setup required
+### Development
 
-The server will start on port 5000 (or the port specified in the `PORT` environment variable).
+```bash
+npm run dev
+```
 
-### Running with Database
+### Build
 
-To use the full application with data persistence:
+```bash
+npm run build
+```
 
-1. Set up a PostgreSQL database (e.g., using Neon, Supabase, or local PostgreSQL)
-2. Copy `docs/env.example` to `.env`
-3. Set `DATABASE_URL` in `.env`:
-   ```
-   DATABASE_URL=postgresql://user:password@host:port/database
-   ```
-4. Run the database migrations:
-   ```bash
-   npm run db:push
-   ```
-5. Start the development server:
-   ```bash
-   npm run dev:server
-   ```
+## Project Structure
 
-### Environment Variables
+```
+client/      # Frontend Vite/React application
+server/      # Backend API
+shared/      # Shared types and utilities
+docs/        # Project documentation
+```
 
-See `docs/env.example` for all available configuration options:
-- `DATABASE_URL` - PostgreSQL connection string (optional for preview mode)
-- `SESSION_SECRET` - Secret for session encryption (auto-generated in preview mode)
-- `OPENAI_API_KEY` - Required for AI features (optional, features will fail gracefully if not set)
+## Deployment
 
-### Development Scripts
+Configured for Netlify via `netlify.toml`. Database migrations managed by Drizzle (`drizzle.config.ts`).
 
-- `npm run dev` - Start Vite dev server (client-only)
-- `npm run dev:server` - Start Express server (with Vite middleware in development) on port 5000
-- `npm run dev:full` - Alias for `npm run dev:server`
-- `npm run build` - Build the client for production
-- `npm run build:server` - Bundle the server for production (writes to `dist/index.js`)
-- `npm start` - Run the bundled server (serves `dist/` and `/api`)
-- `npm run check` - Typecheck (tsc)
-- `npm run db:push` - Push database schema changes
+## Related
+
+- [`OG-Dwellpath`](https://github.com/nmswainston/OG-Dwellpath) — the original Dwellpath build
+
+---
+
+*Built by [nmswainston](https://github.com/nmswainston)*
