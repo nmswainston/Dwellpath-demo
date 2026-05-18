@@ -10,9 +10,6 @@ Property managers and residency programs rely on fragmented spreadsheets and man
 
 Dwellpath is a full-stack web app that centralizes the entire residency management process — from application intake to unit assignment — in one place. This demo showcases the core features with a real backend and database layer.
 
-## Screenshots
-
-> *Add 2–4 screenshots here*
 
 ## Tech Stack
 
